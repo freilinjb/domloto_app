@@ -14,6 +14,9 @@ import SupportScreen from './views/SupportScreen';
 import SplashScreen from './views/SplashScreen';
 import RootStackScreen from './views/RootStackScreen';
 
+//Importar los state del context
+import AuthState from './context/auth/authState';
+
 const Drawer = createDrawerNavigator();
 
 const App = () => {
@@ -29,17 +32,19 @@ const App = () => {
 
   return (
     <>
-      <StatusBar translucent={true} backgroundColor={'transparent'}/>
-      <NavigationContainer>
-        <Drawer.Navigator>
-          <Drawer.Screen name="Splash" component={SplashScreen}/>
-          <Drawer.Screen name="Support" component={SupportScreen}/>
-          <Drawer.Screen name="SignIn" component={SignInScreen}/>
-          <Drawer.Screen name="SignUp" component={SignUpScreen}/>
-          {/* <RootStackScreen/> */}
-          
-        </Drawer.Navigator>
-      </NavigationContainer>
+      <AuthState>
+        <StatusBar translucent={true} backgroundColor={'transparent'}/>
+        <NavigationContainer>
+          <Drawer.Navigator>
+            <Drawer.Screen name="Splash" component={SplashScreen}/>
+            <Drawer.Screen name="Support" component={SupportScreen}/>
+            <Drawer.Screen name="SignIn" component={SignInScreen}/>
+            <Drawer.Screen name="SignUp" component={SignUpScreen}/>
+            {/* <RootStackScreen/> */}
+            
+          </Drawer.Navigator>
+        </NavigationContainer>
+      </AuthState>
     </>
   );
 };
