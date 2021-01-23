@@ -31,18 +31,56 @@ const AuthState = props => {
 
     const [state, dispatch] = useReducer(authReducer, initialState);
 
+    const usuarioAutenticado = async (token) => {
+        // const token = AsyncStorage.getItem('token');
+        //token = "Bearer " + token;
+        token = token.replace("Bearer ", "");
+        console.log('token: 2: ', typeof token);
+        if(token) {
+            tokenAuth(`Bearer ${token}`);
+        }
+
+        try {
+            const resultado = await clienteAxios.get('/api/auth');
+            console.log('resultadousuarioAutenticado: ', resultado);
+
+        } catch (error) {
+            console.log(error);
+            dispatch({
+                type: OBTENER_USUARIO,
+                payload: resultado.data
+            });
+        }
+    }
+
     const iniciarSesion = async (usuario, clave) => {
 
         try {
             console.log('Usuario: ', usuario,'\nClave: ', clave);
-            const data = {
-                usuario,
-                clave
-            }
-            console.log('data: ', data);
             // return;
-             const resultado = await clienteAxios.post('/api/auth/LogIn/', data);
-             console.log('Hola: ', resultado);
+             const resultado = await clienteAxios.post('/api/auth', {
+                 usuario,
+                 clave
+             });
+
+             console.log(resultado);
+
+             if(resultado.data.success === 1) {
+                dispatch({
+                    type: LOGIN_EXITOSO,
+                    payload: resultado.data 
+                });
+                const token = resultado.data.token;
+
+                await usuarioAutenticado(token);
+
+             } else if(resultado.data.success === 0) {
+                console.log('Error: ', resultado);
+                dispatch({
+                    type: LOGIN_ERROR,
+                    payload: resultado.data.message
+                });
+             }
 
         } catch (error) {
             console.log(error);

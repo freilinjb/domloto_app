@@ -19,10 +19,6 @@ import { useTheme } from 'react-native-paper';
 //Importando el Context
 import AuthContext from '../../context/auth/authContext';
 
-// import { AuthContext } from '../components/context';
-
-// import Users from '../model/users';
-
 const SignInScreen = ({navigation}) => {
 
     const { iniciarSesion } = useContext(AuthContext);
@@ -37,9 +33,7 @@ const SignInScreen = ({navigation}) => {
     });
 
     const { colors } = useTheme();
-
-    // const { signIn } = React.useContext(AuthContext);
-
+    
     const textInputChange = (val) => {
         if( val.trim().length >= 4 ) {
             setData({
