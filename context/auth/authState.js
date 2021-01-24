@@ -20,7 +20,7 @@ import {
 const AuthState = props => {
 
     const initialState = {
-        token:  AsyncStorage.getItem('token'),
+        token: AsyncStorage.getItem('token'),
         autenticado: null,
         usuario: null,//La informacion del usuario
         nombre: null,
@@ -31,24 +31,32 @@ const AuthState = props => {
 
     const [state, dispatch] = useReducer(authReducer, initialState);
 
-    const usuarioAutenticado = async (token) => {
-        // const token = AsyncStorage.getItem('token');
+    const usuarioAutenticado = async () => {
+        let token = await AsyncStorage.getItem('token');
         //token = "Bearer " + token;
         token = token.replace("Bearer ", "");
-        console.log('token: 2: ', typeof token);
+        console.log('token: 2: ', token);
         if(token) {
             tokenAuth(`Bearer ${token}`);
         }
 
         try {
-            const resultado = await clienteAxios.get('/api/auth');
-            console.log('resultadousuarioAutenticado: ', resultado);
+            await clienteAxios.get('/api/auth')
+            .then((response) => {
+                dispatch({
+                    type: OBTENER_USUARIO,
+                    payload: response.data
+                });
+            });
+            // console.log('resultadousuarioAutenticado: ', resultado);
+
+            
 
         } catch (error) {
             console.log(error);
             dispatch({
-                type: OBTENER_USUARIO,
-                payload: resultado.data
+                type: LOGIN_ERROR,
+                payload: resultado.data.message
             });
         }
     }
@@ -72,7 +80,7 @@ const AuthState = props => {
                 });
                 const token = resultado.data.token;
 
-                await usuarioAutenticado(token);
+                await usuarioAutenticado();
 
              } else if(resultado.data.success === 0) {
                 console.log('Error: ', resultado);
@@ -102,7 +110,8 @@ const AuthState = props => {
                 mensaje: state.mensaje,
                 cargando: state.cargando,
                 iniciarSesion,
-                saludar
+                saludar,
+                usuarioAutenticado
             }}
         >
             {props.children}

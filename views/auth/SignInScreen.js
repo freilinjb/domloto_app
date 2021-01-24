@@ -1,4 +1,4 @@
-import React,{ useContext } from 'react';
+import React,{ useContext, useEffect } from 'react';
 import { 
     View, 
     Text, 
@@ -7,7 +7,8 @@ import {
     Platform,
     StyleSheet ,
     StatusBar,
-    Alert
+    Alert,
+    ToastAndroid
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -21,11 +22,25 @@ import AuthContext from '../../context/auth/authContext';
 
 const SignInScreen = ({navigation}) => {
 
-    const { iniciarSesion } = useContext(AuthContext);
+    const { iniciarSesion, mensaje, autenticado } = useContext(AuthContext);
+
+    useEffect(() => {
+
+        if(autenticado === true) {
+            navigation.navigate("SignUp");
+        }
+
+        if(mensaje) { 
+            Alert.alert('Error!', mensaje, [
+                {text: 'Okay'}
+            ]);
+        }
+    
+    }, [autenticado, mensaje]);
 
     const [data, setData] = React.useState({
-        username: '',
-        password: '',
+        username: 'freilinjb',
+        password: '1423',
         check_textInputChange: false,
         secureTextEntry: true,
         isValidUser: true,
@@ -33,7 +48,7 @@ const SignInScreen = ({navigation}) => {
     });
 
     const { colors } = useTheme();
-    
+
     const textInputChange = (val) => {
         if( val.trim().length >= 4 ) {
             setData({
@@ -127,6 +142,7 @@ const SignInScreen = ({navigation}) => {
                     style={[styles.textInput, {
                         color: colors.text
                     }]}
+                    value={data.username}
                     autoCapitalize="none"
                     onChangeText={(val) => textInputChange(val)}
                     onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
@@ -157,6 +173,7 @@ const SignInScreen = ({navigation}) => {
                     style={[styles.textInput, {
                         color: colors.text
                     }]}
+                    value={data.password}
                     autoCapitalize="none"
                     onChangeText={(val) => handlePasswordChange(val)}
                 />

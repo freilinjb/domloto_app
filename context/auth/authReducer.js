@@ -11,8 +11,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 export default (state, action) => {
     switch(action.type) {
         case LOGIN_EXITOSO:
-                AsyncStorage.setItem('token', action.payload.token);
+                AsyncStorage.setItem('token', {token: action.payload.token});
                 console.log('Desde el token: ', AsyncStorage.getItem('token'));
+                // console.log('Desde el 222: ', action.payload.token);
                 console.log('action: ', action.payload);
                 return {
                     ...state,
@@ -22,10 +23,16 @@ export default (state, action) => {
                     cargando: false
                 }
         case OBTENER_USUARIO:
-            console.log('action: OBTENER_USUARIO: ', action.payload);
+            console.log('action: OBTENER_USUARIO: ', action.payload.data);
+                // console.log('nombreReducer: ', action.payload.data[0].nombre);
             return {
                 ...state,
-                autenticado: true
+                autenticado: true,
+                nombre: action.payload.data.nombre,
+                apellido: action.payload.data.apellido,
+                usuario: action.payload.data.usuario,
+                mensaje: null,
+                cargando: false
             }
 
         case LOGIN_ERROR:
