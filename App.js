@@ -1,6 +1,6 @@
 
 import 'react-native-gesture-handler';
-import React,{useState} from 'react';
+import React,{useState, useEffect, useContext} from 'react';
 import {View,ActivityIndicator,StatusBar} from 'react-native';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -20,9 +20,20 @@ import AuthState from './context/auth/authState';
 const Drawer = createDrawerNavigator();
 
 const App = () => {
-  const [loginState, SetLoginState] = useState(false);
+  
+  const [cargando, setCargando] = useState(false);
+  const [autenticado, setAutenticado] = useState(null);
 
-  if(loginState) {
+  useEffect(() => {
+    const consultarToken = async () => {
+      const token = await AsyncStorage.getItem('token');
+      setAutenticado(token);
+      console.log('Token desde la App: ', token);
+    }
+    consultarToken();
+  }, []);
+
+  if(cargando) {
     return(
       <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
         <ActivityIndicator size="large"/>
@@ -35,14 +46,19 @@ const App = () => {
       <AuthState>
         <StatusBar translucent={true} backgroundColor={'transparent'}/>
         <NavigationContainer>
-          <Drawer.Navigator>
-            <Drawer.Screen name="Splash" component={SplashScreen}/>
-            <Drawer.Screen name="Support" component={SupportScreen}/>
-            <Drawer.Screen name="SignIn" component={SignInScreen}/>
-            <Drawer.Screen name="SignUp" component={SignUpScreen}/>
-            {/* <RootStackScreen/> */}
-            
-          </Drawer.Navigator>
+        { autenticado !== null ? (
+
+            <Drawer.Navigator>
+              <Drawer.Screen name="Splash" component={SplashScreen}/>
+              <Drawer.Screen name="Support" component={SupportScreen}/>
+              
+              <Drawer.Screen name="SignIn" component={SignInScreen}/>
+              <Drawer.Screen name="SignUp" component={SignUpScreen}/>            
+            </Drawer.Navigator>
+          )
+        :
+            <RootStackScreen/>
+        }
         </NavigationContainer>
       </AuthState>
     </>
