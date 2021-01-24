@@ -7,8 +7,7 @@ import {
     Platform,
     StyleSheet ,
     StatusBar,
-    Alert,
-    ToastAndroid
+    Alert
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -18,16 +17,18 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
 
 //Importando el Context
-import AuthContext from '../../context/auth/authContext';
+import {AuthContext, AuthContextApp} from '../../context/auth/authContext';
 
 const SignInScreen = ({navigation}) => {
 
-    const { iniciarSesion, mensaje, autenticado } = useContext(AuthContext);
+    const { signIn } = useContext(AuthContextApp);
+    const { iniciarSesion, mensaje, autenticado, token, usuario } = useContext(AuthContext);
 
     useEffect(() => {
 
         if(autenticado === true) {
-            navigation.navigate("SignUp");
+            // navigation.navigate("SignUp");
+            signIn({usuario, token });
         }
 
         if(mensaje) { 
@@ -35,8 +36,10 @@ const SignInScreen = ({navigation}) => {
                 {text: 'Okay'}
             ]);
         }
-    
-    }, [autenticado, mensaje]);
+        // const hola = {usuario: 'freilijb@gmail.com', token: 'holamundo'};
+        // signIn(hola);
+        // console.log(hola);
+    }, [autenticado, mensaje, token, usuario]);
 
     const [data, setData] = React.useState({
         username: 'freilinjb',
@@ -123,6 +126,10 @@ const SignInScreen = ({navigation}) => {
         //     ]);
         //     return;
         // }
+
+        // const hola = {usuario: 'freilijb@gmail.com', token: 'holamundo'};
+        // signIn(hola);
+        // console.log('hola: ', hola);
         iniciarSesion(userName, password);
     }
 

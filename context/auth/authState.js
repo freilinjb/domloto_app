@@ -5,7 +5,7 @@ import clienteAxios from '../../config/axios';
 import tokenAuth from '../../config/token';
 
 import authReducer from './authReducer';
-import authContext from './authContext';
+import { AuthContext } from './authContext';
 
 import { 
     REGISTRO_EXITOSO,
@@ -100,7 +100,7 @@ const AuthState = props => {
     }
 
     return(
-        <authContext.Provider
+        <AuthContext.Provider
             value={{
                 token: state.token,
                 autenticado: state.autenticado,
@@ -115,7 +115,7 @@ const AuthState = props => {
             }}
         >
             {props.children}
-        </authContext.Provider>
+        </AuthContext.Provider>
     )
 }
 
