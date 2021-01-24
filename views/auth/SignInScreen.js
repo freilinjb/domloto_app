@@ -27,8 +27,8 @@ const SignInScreen = ({navigation}) => {
     useEffect(() => {
 
         if(autenticado === true) {
-            // navigation.navigate("SignUp");
-            signIn({usuario, token });
+        //     // navigation.navigate("SignUp");
+            signIn(usuario, token);
         }
 
         if(mensaje) { 
@@ -107,7 +107,7 @@ const SignInScreen = ({navigation}) => {
         }
     }
 
-    const loginHandle = (userName, password) => {
+    const loginHandle = async (userName, password) => {
 
         // const foundUser = Users.filter( item => {
         //     return userName == item.username && password == item.password;
@@ -131,6 +131,7 @@ const SignInScreen = ({navigation}) => {
         // signIn(hola);
         // console.log('hola: ', hola);
         iniciarSesion(userName, password);
+        await signIn(userName, token);
     }
 
     return (

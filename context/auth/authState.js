@@ -31,24 +31,32 @@ const AuthState = props => {
 
     const [state, dispatch] = useReducer(authReducer, initialState);
 
-    const usuarioAutenticado = async () => {
-        let token = await AsyncStorage.getItem('token');
-        //token = "Bearer " + token;
-        token = token.replace("Bearer ", "");
-        console.log('token: 2: ', token);
+    const usuarioAutenticado = async (token) => {
+        // let token = AsyncStorage.getItem('token');
+        // let token = initialState.token;
+
+        // console.log('Token2222: ', token);
+
+        // token = "Bearer " + token;
+        // token = token.replace("Bearer ", "");
+
+        // console.log('token: 2: ', token);
         if(token) {
             tokenAuth(`Bearer ${token}`);
         }
 
         try {
-            await clienteAxios.get('/api/auth')
+            const resultado = await clienteAxios.get('/api/auth')
             .then((response) => {
+
+
                 dispatch({
                     type: OBTENER_USUARIO,
                     payload: response.data
                 });
             });
-            // console.log('resultadousuarioAutenticado: ', resultado);
+
+            console.log('resultadousuarioAutenticado: ', resultado);
 
             
 
@@ -71,7 +79,7 @@ const AuthState = props => {
                  clave
              });
 
-             console.log(resultado);
+             console.log('iniciarSesion: ' , resultado);
 
              if(resultado.data.success === 1) {
                 dispatch({
@@ -80,7 +88,7 @@ const AuthState = props => {
                 });
                 const token = resultado.data.token;
 
-                await usuarioAutenticado();
+                await usuarioAutenticado(token);
 
              } else if(resultado.data.success === 0) {
                 console.log('Error: ', resultado);
@@ -93,6 +101,12 @@ const AuthState = props => {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const cerrarSesion = () => {
+        dispatch({
+            type:CERRAR_SESION
+        });
     }
 
     const saludar =() => {
@@ -111,7 +125,8 @@ const AuthState = props => {
                 cargando: state.cargando,
                 iniciarSesion,
                 saludar,
-                usuarioAutenticado
+                usuarioAutenticado,
+                cerrarSesion
             }}
         >
             {props.children}

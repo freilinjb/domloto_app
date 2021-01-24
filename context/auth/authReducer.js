@@ -11,10 +11,10 @@ import AsyncStorage from '@react-native-community/async-storage';
 export default (state, action) => {
     switch(action.type) {
         case LOGIN_EXITOSO:
-                AsyncStorage.setItem('token', {token: action.payload.token});
-                console.log('Desde el token: ', AsyncStorage.getItem('token'));
+                AsyncStorage.setItem('token', action.payload.token);
+                // console.log('Desde el token: ', AsyncStorage.getItem('token'));
                 // console.log('Desde el 222: ', action.payload.token);
-                console.log('action: ', action.payload);
+                // console.log('action: ', action.payload);
                 return {
                     ...state,
                     token: action.payload.token,
@@ -23,7 +23,7 @@ export default (state, action) => {
                     cargando: false
                 }
         case OBTENER_USUARIO:
-            console.log('action: OBTENER_USUARIO: ', action.payload.data);
+            // console.log('action: OBTENER_USUARIO: ', action.payload.data);
                 // console.log('nombreReducer: ', action.payload.data[0].nombre);
             return {
                 ...state,
@@ -37,14 +37,25 @@ export default (state, action) => {
 
         case LOGIN_ERROR:
             AsyncStorage.removeItem('token');
-            console.log('action: ', action.payload);
+            // console.log('action: ', action.payload);
             return {
                 ...state,
                 token: null,
-                nombre: null,
-                apellido: null,
-                usuario: null,
+                // nombre: null,
+                // apellido: null,
+                // usuario: null,
                 mensaje: action.payload,
+                cargando: false
+            }
+
+        case CERRAR_SESION:
+            case REGISTRO_ERROR:
+            AsyncStorage.removeItem('token');
+            return{
+                ...state,
+                token: null,
+                autenticado: null,
+                mensaje: action.payload ? action.payload : null,//se maneta con el authState
                 cargando: false
             }
         default: 

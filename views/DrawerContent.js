@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, StyleSheet } from 'react-native';
 import {
     useTheme,
@@ -11,21 +11,32 @@ import {
     TouchableRipple,
     Switch
 } from 'react-native-paper';
-import {
-    DrawerContentScrollView,
-    DrawerItem
-} from '@react-navigation/drawer';
-
+import {DrawerContentScrollView,DrawerItem} from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import{ AuthContextApp } from '../context/auth/authContext';
+import{ AuthContextApp, AuthContext } from '../context/auth/authContext';
 
 export function DrawerContent(props) {
 
     const paperTheme = useTheme();
 
     const { signOut } = React.useContext(AuthContextApp);
+    const { usuarioAutenticado, autenticado, nombre, apellido, usuario, cerrarSesion } = React.useContext(AuthContext);
 
+    useEffect(() => {
+        validarSesion = async () => {
+            // usuarioAutenticado();
+            if(autenticado === null) {
+                signOut();
+            }
+        }
+        validarSesion();
+    }, []);
+    
+
+    const limpiarLaSesion = () => {
+        signOut();
+        cerrarSesion();
+    }
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>
@@ -39,8 +50,8 @@ export function DrawerContent(props) {
                                 size={50}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
-                                <Title style={styles.title}>Freilin Jose</Title>
-                                <Caption style={styles.caption}>Administrador</Caption>
+                                <Title style={styles.title}>{nombre+ ' ' +apellido}</Title>
+                                <Caption style={styles.caption}>{'@'+usuario}</Caption>
                             </View>
                         </View>
 
@@ -68,7 +79,7 @@ export function DrawerContent(props) {
                             label="Home"
                             onPress={() => {props.navigation.navigate('Home')}}
                         />
-                        <DrawerItem 
+                        {/* <DrawerItem 
                             icon={({color, size}) => (
                                 <Icon 
                                 name="account-outline" 
@@ -100,10 +111,10 @@ export function DrawerContent(props) {
                             )}
                             label="Settings"
                             onPress={() => {props.navigation.navigate('SettingsScreen')}}
-                        />
+                        /> */}
                         
                     </Drawer.Section>
-                    <Drawer.Section title="Preferences">
+                    {/* <Drawer.Section title="Preferences">
                         <TouchableRipple 
                             // onPress={() => {toggleTheme()}}
                         >
@@ -114,7 +125,7 @@ export function DrawerContent(props) {
                                 </View>
                             </View>
                         </TouchableRipple>
-                    </Drawer.Section>
+                    </Drawer.Section> */}
                 </View>
             </DrawerContentScrollView>
             <Drawer.Section style={styles.bottomDrawerSection}>
@@ -127,7 +138,7 @@ export function DrawerContent(props) {
                         />
                     )}
                     label="Sign Out"
-                    onPress={() => {signOut()}}
+                    onPress={() => {limpiarLaSesion()}}
                 />
             </Drawer.Section>
         </View>
