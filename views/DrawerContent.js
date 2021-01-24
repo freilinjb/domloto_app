@@ -23,10 +23,11 @@ export function DrawerContent(props) {
     const { usuarioAutenticado, autenticado, nombre, apellido, usuario, cerrarSesion } = React.useContext(AuthContext);
 
     useEffect(() => {
-        validarSesion = async () => {
+        const validarSesion = async () => {
             // usuarioAutenticado();
             if(autenticado === null) {
                 signOut();
+                cerrarSesion();
             }
         }
         validarSesion();
@@ -79,7 +80,7 @@ export function DrawerContent(props) {
                             label="Home"
                             onPress={() => {props.navigation.navigate('Home')}}
                         />
-                        {/* <DrawerItem 
+                        <DrawerItem 
                             icon={({color, size}) => (
                                 <Icon 
                                 name="account-outline" 
@@ -98,20 +99,21 @@ export function DrawerContent(props) {
                                 size={size}
                                 />
                             )}
-                            label="Bookmarks"
-                            onPress={() => {props.navigation.navigate('BookmarkScreen')}}
+                            label="Explore"
+                            onPress={() => {props.navigation.navigate('Explore')}}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
                                 <Icon 
-                                name="settings-outline" 
+                                name="bookmark-outline" 
                                 color={color}
                                 size={size}
                                 />
                             )}
-                            label="Settings"
-                            onPress={() => {props.navigation.navigate('SettingsScreen')}}
-                        /> */}
+                            label="Configuracion"
+                            onPress={() => {props.navigation.navigate('Configuracion')}}
+                        />
+
                         
                     </Drawer.Section>
                     {/* <Drawer.Section title="Preferences">

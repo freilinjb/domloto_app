@@ -34,7 +34,7 @@ const App = () => {
   const initialLoginState = {
     isLoading: true,
     userName: null,
-    userToken: null,
+    userToken: AsyncStorage.getItem('userToken'),
     };
 
     const loginReducer = (prevState, action) => {
@@ -78,9 +78,9 @@ const App = () => {
         // console.log('foundUser: ', foundUser);
         const userToken = token;
         const userName = usuario;
-        
+        console.log('Token App: ', String(token));
         try {
-          await AsyncStorage.setItem('userToken', userToken);
+          await AsyncStorage.setItem('userToken', String(token));
         } catch(e) {
           console.log(e);
         }
@@ -103,20 +103,19 @@ const App = () => {
     }), []);
 
       useEffect(() => {
-        cambiarPantalla = async () => {
-          // setIsLoading(false);
-          let userToken;
-          userToken = null;
-          try {
-            userToken = await AsyncStorage.getItem('userToken');
-          } catch(e) {
-            console.log(e);
-          }
-          // console.log('user token: ', userToken);
-          dispatch({ type: 'RETRIEVE_TOKEN', token: userToken });
-        }
-
-        cambiarPantalla();
+        setTimeout(() => {
+            // setIsLoading(false);
+            let userToken;
+            userToken = null;
+            try {
+              userToken = AsyncStorage.getItem('token');
+            } catch(e) {
+              console.log(e);
+            }
+            // console.log('user token: ', userToken);
+            dispatch({ type: 'RETRIEVE_TOKEN', token: userToken });
+  
+        }, 500);
       }, []);
 
 
