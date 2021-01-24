@@ -14,6 +14,8 @@ import SupportScreen from './views/SupportScreen';
 import SplashScreen from './views/SplashScreen';
 import RootStackScreen from './views/RootStackScreen';
 
+import MainTabScreen from './views/MainTabScreen';
+
 //Importar los state del context
 import AuthState from './context/auth/authState';
 
@@ -49,7 +51,7 @@ const App = () => {
         { autenticado !== null ? (
 
             <Drawer.Navigator>
-              <Drawer.Screen name="Splash" component={SplashScreen}/>
+              <Drawer.Screen name="HomeDrawer" component={MainTabScreen}/>
               <Drawer.Screen name="Support" component={SupportScreen}/>
               
               <Drawer.Screen name="SignIn" component={SignInScreen}/>
