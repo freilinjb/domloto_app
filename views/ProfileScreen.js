@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 // import {View, Text, Button, TextInput, StyleSheet} from 'react-native';
 import {DataTable} from 'react-native-paper';
-
 // import React,{ useContext, useEffect } from 'react';
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import {
   View,
   Text,
@@ -21,15 +22,15 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-import {Surface} from 'react-native-paper';
-import VirtualKeyboardNumeros from 'react-native-virtual-keyboard';
-import VirtualKeyboardMontos from 'react-native-virtual-keyboard';
+import {Surface, Divider} from 'react-native-paper';
+import VirtualKeyboard from 'react-native-virtual-keyboard';
 
 const ProfileScreen = () => {
   const [operacion, setOperacion] = useState('monto');
   const [numeros, setNumeros] = useState('');
   const [montos, setMontos] = useState(0);
   const [tipoLoteria, setTipoLoteria] = useState('');
+  const [selectedItems, setSelectedItems] = useState([]);
 
   const changeMonto = (texto) => {
     setMontos(Number(texto));
@@ -77,18 +78,59 @@ const ProfileScreen = () => {
     console.log('operacion: despues', operacion);
   }
 
+  const items = [
+    // this is the parent or 'item'
+    {
+      name: 'Nacional',
+      id: 0,
+      // these are the children or 'sub items'
+      children: [
+        {
+          name: 'Juega + Pega +',
+          id: 10,
+        },
+        {
+          name: 'Gana Más',
+          id: 17,
+        },
+        {
+          name: 'Lotería Nacional',
+          id: 13,
+        },
+        {
+          name: 'Pega 3 Más',
+          id: 14,
+        },
+        {
+          name: 'Loto Pool',
+          id: 15,
+        },
+        {
+          name: 'Quiniela Leidsa',
+          id: 16,
+        },
+      ],
+    }
+  ];
+
+  const onSelectedItemsChange = (selectedItems) => {
+    setSelectedItems(selectedItems);
+  };
+
+
   // const
   return (
     <>
-      <View style={styles.container}>
+          <ScrollView>
+
+      <View style={[styles.container,{marginHorizontal: '2%'}]}>
         {/* <View style={styles.header}> */}
           {/* <Text style={styles.text_header}>Bienvenido!</Text> */}
         {/* </View> */}
         
-        <Surface style={styles.surface}>
-        <LinearGradient colors={['#D8CB00', '#FFDA00']}>
+        <Surface style={{marginBottom: 10, marginTop: 10}}>
+        {/* <LinearGradient colors={['#D8CB00', '#FFDA00']}> */}
 
-          <ScrollView>
             <DataTable>
               <DataTable.Header>
                 <DataTable.Title>#</DataTable.Title>
@@ -112,7 +154,9 @@ const ProfileScreen = () => {
                 <DataTable.Cell>2</DataTable.Cell>
                 <DataTable.Cell>TRIPLETA</DataTable.Cell>
                 <DataTable.Cell numeric>10 - 45 -10</DataTable.Cell>
-                <DataTable.Cell numeric>RD$ 50.00</DataTable.Cell>
+                <DataTable.Cell numeric>                  
+                  <FontAwesome name="user-o" color="#000" size={20}/>
+                </DataTable.Cell>
               </DataTable.Row>
 
               <DataTable.Pagination
@@ -124,75 +168,90 @@ const ProfileScreen = () => {
                 label="1-2 of 6"
               />
             </DataTable>
-          </ScrollView>
-        </LinearGradient>
+        {/* </LinearGradient> */}
         </Surface>
+        <View style={{backgroundColor: '#fff', borderRadius: 5, marginBottom: 15, borderRadius: 10}}>
+          <SectionedMultiSelect
+            items={items}
+            IconRenderer={Icon}
+            uniqueKey="id"
+            subKey="children"
+            selectText="Seleccione la loteria..."
+            showDropDowns={true}
+            readOnlyHeadings={true}
+            onSelectedItemsChange={onSelectedItemsChange}
+            selectedItems={selectedItems}
+          />
+        </View>
+        <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around', borderRadius: 30, width: '100%'}}>
+          <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around'}}
+            onPress={ ()=> setOperacion("numeros")}
+          >
+            <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', backgroundColor: '#fff', width: '99%' }}>
+              {/* {texto.length > 0 ? texto : ' -  -  - '} */}
+              {numeros ? numeros : ' -  -  - '}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around'}}
+            onPress={ ()=> setOperacion("monto")}
+          >
 
-        {/* <View style={([styles.action], {textAlign: 'center', borderColor: 'red'})}>
-          <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', borderWidth: 1}}>
-            {texto.length > 0 ? texto : ' -  -  - '}
-          </Text>
-          <Text style={{fontSize: 10,fontWeight: 'bold',textAlign: 'center',borderWidth: 1}}>
-            {tipoLoteria.length > 0 ? tipoLoteria : ' -  -  - '}
-          </Text>
-        </View> */}
-
-        <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around'}}>
-          <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', borderWidth: 1, width: '50%' }}>
-            {/* {texto.length > 0 ? texto : ' -  -  - '} */}
-            {numeros ? numeros : ' -  -  - '}
-
-          </Text>
-          <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', borderWidth: 1, width: '50%' }}>
+                <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', backgroundColor: '#fff', width: '99%'}}>
             {/* {tipoLoteria.length > 0 ? tipoLoteria : ' -  -  - '} */}
             {montos > 0 ? `RD$ ${montos}.00` : '$RD 0.00'}
             {/* $100.00 */}
           </Text>
-          <Text style={{fontSize: 20,fontWeight: 'bold',textAlign: 'center',borderWidth: 1, width: '100%'}}>
-            {tipoLoteria.length > 0 ? tipoLoteria : ' -  -  - '}
-          </Text>
+          </TouchableOpacity>
+          
         </View>
         {/* SEPARADOR */}
         <View style={styles.separator} />
+        <Text style={{fontSize: 20,fontWeight: 'bold',textAlign: 'center', marginTop: 10, width: '100%', backgroundColor: '#fff', borderRadius: 30}}>
+            {tipoLoteria.length > 0 ? ` --::  ${tipoLoteria}  ::--` : ' -  -  - '}
+          </Text>
         <View style={{marginBottom: 10}}>
           {/* <Text>{texto.text}</Text> */}
 
           {operacion === 'numeros' ? 
           (
-            <VirtualKeyboardNumeros
+            <VirtualKeyboard
                 key={1}
                 color="#000000"
                 pressMode="string"
                 // rowStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}
-                cellStyle={{borderWidth: 3, borderColor: '#000000'}}
+                cellStyle={{borderWidth: 0.5, borderColor: '#000000'}}
                 onPress={(val) => changeText(val)}
                 // style={{fontSize: 30}}
               />
           )
           :
           (
-            <VirtualKeyboardMontos
+            <VirtualKeyboard
                 key={2}
                 color="#000000"
                 pressMode="string"
                 // rowStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}
-                cellStyle={{borderWidth: 3, borderColor: '#000000'}}
+                cellStyle={{borderWidth: 0.5, borderColor: '#000000', backgroundColor: '#FFDA00'}}
                 onPress={(texto) => setMontos(Number(texto))}
+                backspaceImg={true}
                 // style={{fontSize: 30}}
               />
           )}
-          
+          <View>
+      </View>
           <View>
         </View>
 
         </View>
 
         <Surface>
-        <Button title={operacion} color="#000000"
+        <Button title={operacion == "monto" ?  montos === 0 ? "MONTO" : "PROCESAR"  : operacion} color="#000000"
           onPress={() => cambiarOperacion()}
         />        
         </Surface>
       </View>
+      </ScrollView>
+
     </>
   );
 };
@@ -259,17 +318,6 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     marginTop: 50,
-  },
-  signIn: {
-    width: '100%',
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  textSign: {
-    fontSize: 18,
-    fontWeight: 'bold',
   },
   separator: {
     marginVertical: 8,
