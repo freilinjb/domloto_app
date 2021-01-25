@@ -19,7 +19,7 @@ const Tab = createMaterialBottomTabNavigator();
 const MainTabScreen = () => (
     <Tab.Navigator
       initialRouteName="Profile"
-      activeColor="#fff"
+      activeColor="#000000"
     >
       <Tab.Screen
         name="Home"
@@ -48,7 +48,7 @@ const MainTabScreen = () => (
         component={VentasStackScreen}
         options={{
           tabBarLabel: 'Ventas',
-          tabBarColor: '#694fad',
+          tabBarColor: '#FFDA00',
           tabBarIcon: ({ color }) => (
             <Icon name="ios-calculator-sharp" color={color} size={26} />
           ),
@@ -121,20 +121,21 @@ const DetailsStackScreen = ({navigation}) => (
 const VentasStackScreen = ({navigation}) => (
   <DetailsStack.Navigator screenOptions={{
           headerStyle: {
-          backgroundColor: '#1f65ff',
+          backgroundColor: '#FFDA00',
           },
-          headerTintColor: '#fff',
+          headerTintColor: '#000000',
           headerTitleStyle: {
           fontWeight: 'bold'
           }
       }}>
-          <DetailsStack.Screen name="Ventas" component={ProfileScreen} options={{
+          <DetailsStack.Screen name="Ventas de numero" component={ProfileScreen} options={{
             headerLeft: () => (
-                <Icon.Button name="ios-menu" size={25} backgroundColor="#1f65ff" onPress={() => navigation.openDrawer()}></Icon.Button>
+                <Icon.Button name="ios-menu" size={25} backgroundColor="#FFDA00" color="#000000" onPress={() => navigation.openDrawer()}></Icon.Button>
             ),
             headerRight: props => (
-              <Icon.Button name="ios-print-outline" size={25} backgroundColor="#1f65ff" onPress={() => navigation.openDrawer()}></Icon.Button>
-            )
+              <Icon.Button name="ios-print-outline" size={25} backgroundColor="#FFDA00" color="#000000" onPress={() => navigation.openDrawer()}></Icon.Button>
+            ),
+            headerTitleAlign: 'center'
           }} />
   </DetailsStack.Navigator>
   );

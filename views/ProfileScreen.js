@@ -22,15 +22,20 @@ import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import {Surface} from 'react-native-paper';
-import VirtualKeyboard from 'react-native-virtual-keyboard';
+import VirtualKeyboardNumeros from 'react-native-virtual-keyboard';
+import VirtualKeyboardMontos from 'react-native-virtual-keyboard';
 
 const ProfileScreen = () => {
-  const [operacion, setOperacion] = useState('');
-  const [texto, setNumeros] = useState('');
+  const [operacion, setOperacion] = useState('monto');
+  const [numeros, setNumeros] = useState('');
+  const [montos, setMontos] = useState(0);
   const [tipoLoteria, setTipoLoteria] = useState('');
 
+  const changeMonto = (texto) => {
+    setMontos(Number(texto));
+  }
   const changeText = (newText) => {
-    if (newText.length <= 6) {
+    if (newText.length <= 6 && operacion === 'numeros') {
       console.log('hola: ', newText);
       let contadorTipoJuego = 0;
       let temp = '';
@@ -53,10 +58,24 @@ const ProfileScreen = () => {
       }
 
       setNumeros(temp);
-    } else {
+    }
+     else {
       Alert.alert('Error!', 'Para donde vas tiguere', [{text: 'Okay'}]);
     }
   };
+
+  const cambiarOperacion = () => {
+    console.log('operacion antes: ', operacion);
+
+    if(operacion === 'numeros') {
+      setOperacion('monto');
+    } else {
+      setOperacion('numeros');
+    }
+    
+
+    console.log('operacion: despues', operacion);
+  }
 
   // const
   return (
@@ -67,6 +86,8 @@ const ProfileScreen = () => {
         {/* </View> */}
         
         <Surface style={styles.surface}>
+        <LinearGradient colors={['#D8CB00', '#FFDA00']}>
+
           <ScrollView>
             <DataTable>
               <DataTable.Header>
@@ -74,6 +95,7 @@ const ProfileScreen = () => {
                 <DataTable.Title>Tipo de juego</DataTable.Title>
                 <DataTable.Title numeric>Numeros</DataTable.Title>
                 <DataTable.Title numeric>Cantidad</DataTable.Title>
+                <DataTable.Title numeric>Accion</DataTable.Title>
               </DataTable.Header>
 
               <DataTable.Row>
@@ -81,6 +103,9 @@ const ProfileScreen = () => {
                 <DataTable.Cell>TRIPLETA</DataTable.Cell>
                 <DataTable.Cell numeric>10 - 45 -10</DataTable.Cell>
                 <DataTable.Cell numeric>RD$ 50.00</DataTable.Cell>
+                <DataTable.Cell numeric>
+                  <FontAwesome name="user-o" color="#000" size={20}/>
+                </DataTable.Cell>
               </DataTable.Row>
 
               <DataTable.Row>
@@ -100,6 +125,7 @@ const ProfileScreen = () => {
               />
             </DataTable>
           </ScrollView>
+        </LinearGradient>
         </Surface>
 
         {/* <View style={([styles.action], {textAlign: 'center', borderColor: 'red'})}>
@@ -113,13 +139,16 @@ const ProfileScreen = () => {
 
         <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around'}}>
           <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', borderWidth: 1, width: '50%' }}>
-            {texto.length > 0 ? texto : ' -  -  - '}
+            {/* {texto.length > 0 ? texto : ' -  -  - '} */}
+            {numeros ? numeros : ' -  -  - '}
+
           </Text>
           <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', borderWidth: 1, width: '50%' }}>
             {/* {tipoLoteria.length > 0 ? tipoLoteria : ' -  -  - '} */}
-            $100.00
+            {montos > 0 ? `RD$ ${montos}.00` : '$RD 0.00'}
+            {/* $100.00 */}
           </Text>
-          <Text style={{fontSize: 10,fontWeight: 'bold',textAlign: 'center',borderWidth: 1, width: '100%'}}>
+          <Text style={{fontSize: 20,fontWeight: 'bold',textAlign: 'center',borderWidth: 1, width: '100%'}}>
             {tipoLoteria.length > 0 ? tipoLoteria : ' -  -  - '}
           </Text>
         </View>
@@ -128,20 +157,41 @@ const ProfileScreen = () => {
         <View style={{marginBottom: 10}}>
           {/* <Text>{texto.text}</Text> */}
 
-          <VirtualKeyboard
-            color="blue"
-            pressMode="string"
-            // rowStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}
-            cellStyle={{borderWidth: 3, borderColor: '#C1C0B9'}}
-            onPress={(val) => changeText(val)}
-            // style={{fontSize: 30}}
-          />
+          {operacion === 'numeros' ? 
+          (
+            <VirtualKeyboardNumeros
+                key={1}
+                color="#000000"
+                pressMode="string"
+                // rowStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}
+                cellStyle={{borderWidth: 3, borderColor: '#000000'}}
+                onPress={(val) => changeText(val)}
+                // style={{fontSize: 30}}
+              />
+          )
+          :
+          (
+            <VirtualKeyboardMontos
+                key={2}
+                color="#000000"
+                pressMode="string"
+                // rowStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}
+                cellStyle={{borderWidth: 3, borderColor: '#000000'}}
+                onPress={(texto) => setMontos(Number(texto))}
+                // style={{fontSize: 30}}
+              />
+          )}
+          
           <View>
         </View>
 
         </View>
-        <Button title="hola" />        
-        
+
+        <Surface>
+        <Button title={operacion} color="#000000"
+          onPress={() => cambiarOperacion()}
+        />        
+        </Surface>
       </View>
     </>
   );
