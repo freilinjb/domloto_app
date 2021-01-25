@@ -1,5 +1,4 @@
-import React,{useState
-} from 'react';
+import React, {useState} from 'react';
 // import {View, Text, Button, TextInput, StyleSheet} from 'react-native';
 import {DataTable} from 'react-native-paper';
 
@@ -9,133 +8,140 @@ import {
   Text,
   TouchableOpacity,
   TouchableHighlight,
-  TouchableHighlightComponent,
+  Keyboard,
   TextInput,
   Platform,
   StyleSheet,
+  Button,
   StatusBar,
   Alert,
+  ScrollView,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import {Surface} from 'react-native-paper';
+import VirtualKeyboard from 'react-native-virtual-keyboard';
 
 const ProfileScreen = () => {
-  const [numeros, setNumeros] = useState('');
+  const [operacion, setOperacion] = useState('');
+  const [texto, setNumeros] = useState('');
+  const [tipoLoteria, setTipoLoteria] = useState('');
 
-  const numerosButton = (numero)=> {
-    numero += numeros;
-    setNumeros(numero);
-  }
+  const changeText = (newText) => {
+    if (newText.length <= 6) {
+      console.log('hola: ', newText);
+      let contadorTipoJuego = 0;
+      let temp = '';
+      for (let i = 0; i < newText.length; i++) {
+        console.log('hola: ', newText[i]);
+        if (i > 0 && i % 2 == 0) {
+          temp += ' - ';
+          contadorTipoJuego++;
+        }
+        temp += newText[i];
+      }
 
-  // const 
+      if (contadorTipoJuego !== 0 && contadorTipoJuego < 3) {
+        const tipo = ['SUPER PALE', 'TRIPLETA'];
+        setTipoLoteria(tipo[contadorTipoJuego - 1]);
+      } else if (contadorTipoJuego === 0) {
+        setTipoLoteria('PALE');
+      } else if (newText.length === 1) {
+        setTipoLoteria(' - - - ');
+      }
+
+      setNumeros(temp);
+    } else {
+      Alert.alert('Error!', 'Para donde vas tiguere', [{text: 'Okay'}]);
+    }
+  };
+
+  // const
   return (
     <>
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.text_header}>Bienvenido!</Text>
-        </View>
-        <View style={styles.action}>
-          <TextInput
-            placeholder="Your Password"
-            placeholderTextColor="#666666"
-            style={[styles.textInput, {backgroundColor: '#FFF', fontSize: 40, textAlign: 'center'}]}
-            value={numeros}
-            autoCapitalize="none"
-            onChangeText={(val) => handlePasswordChange(val)}
-          />
+        {/* <View style={styles.header}> */}
+          {/* <Text style={styles.text_header}>Bienvenido!</Text> */}
+        {/* </View> */}
+        
+        <Surface style={styles.surface}>
+          <ScrollView>
+            <DataTable>
+              <DataTable.Header>
+                <DataTable.Title>#</DataTable.Title>
+                <DataTable.Title>Tipo de juego</DataTable.Title>
+                <DataTable.Title numeric>Numeros</DataTable.Title>
+                <DataTable.Title numeric>Cantidad</DataTable.Title>
+              </DataTable.Header>
+
+              <DataTable.Row>
+                <DataTable.Cell>1</DataTable.Cell>
+                <DataTable.Cell>TRIPLETA</DataTable.Cell>
+                <DataTable.Cell numeric>10 - 45 -10</DataTable.Cell>
+                <DataTable.Cell numeric>RD$ 50.00</DataTable.Cell>
+              </DataTable.Row>
+
+              <DataTable.Row>
+                <DataTable.Cell>2</DataTable.Cell>
+                <DataTable.Cell>TRIPLETA</DataTable.Cell>
+                <DataTable.Cell numeric>10 - 45 -10</DataTable.Cell>
+                <DataTable.Cell numeric>RD$ 50.00</DataTable.Cell>
+              </DataTable.Row>
+
+              <DataTable.Pagination
+                page={1}
+                numberOfPages={3}
+                onPageChange={(page) => {
+                  console.log(page);
+                }}
+                label="1-2 of 6"
+              />
+            </DataTable>
+          </ScrollView>
+        </Surface>
+
+        {/* <View style={([styles.action], {textAlign: 'center', borderColor: 'red'})}>
+          <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', borderWidth: 1}}>
+            {texto.length > 0 ? texto : ' -  -  - '}
+          </Text>
+          <Text style={{fontSize: 10,fontWeight: 'bold',textAlign: 'center',borderWidth: 1}}>
+            {tipoLoteria.length > 0 ? tipoLoteria : ' -  -  - '}
+          </Text>
+        </View> */}
+
+        <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around'}}>
+          <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', borderWidth: 1, width: '50%' }}>
+            {texto.length > 0 ? texto : ' -  -  - '}
+          </Text>
+          <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', borderWidth: 1, width: '50%' }}>
+            {/* {tipoLoteria.length > 0 ? tipoLoteria : ' -  -  - '} */}
+            $100.00
+          </Text>
+          <Text style={{fontSize: 10,fontWeight: 'bold',textAlign: 'center',borderWidth: 1, width: '100%'}}>
+            {tipoLoteria.length > 0 ? tipoLoteria : ' -  -  - '}
+          </Text>
         </View>
         {/* SEPARADOR */}
         <View style={styles.separator} />
-        <DataTable.Row style={{height: 80}}>
-          <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableHighlight style={{alignItems:'center'}} onPress={()=>numerosButton('7')}>
-              <Text style={{fontSize: 40, textAlign: 'center'}}>M</Text>
-            </TouchableHighlight>
-          </DataTable.Cell>
-          <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}>8</Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-          <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}>9</Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-          <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}> - </Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-        </DataTable.Row>
-        <DataTable.Row style={{height: 80}}>
-        <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}>4</Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-          <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}>5</Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-          <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}>6</Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-          <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}> - </Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-        </DataTable.Row>
-        <DataTable.Row style={{height: 80}}>
-        <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}>1</Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-          <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}>2</Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-          <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}>3</Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-          <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}> - </Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-        </DataTable.Row>
-        <DataTable.Row style={{height: 80}}>
-        <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}> - </Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-          <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}> 0 </Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-          <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}> - </Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-          <DataTable.Cell numeric style={{borderWidth: 0.5,justifyContent: 'center'}}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 40}}> - </Text>
-            </TouchableOpacity>
-          </DataTable.Cell>
-        </DataTable.Row>
+        <View style={{marginBottom: 10}}>
+          {/* <Text>{texto.text}</Text> */}
+
+          <VirtualKeyboard
+            color="blue"
+            pressMode="string"
+            // rowStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}
+            cellStyle={{borderWidth: 3, borderColor: '#C1C0B9'}}
+            onPress={(val) => changeText(val)}
+            // style={{fontSize: 30}}
+          />
+          <View>
+        </View>
+
+        </View>
+        <Button title="hola" />        
+        
       </View>
     </>
   );
@@ -144,6 +150,11 @@ const ProfileScreen = () => {
 export default ProfileScreen;
 
 const styles = StyleSheet.create({
+  surface: {
+    padding: 8,
+    elevation: 4,
+    margin: 10,
+  },
   container: {
     flex: 1,
     // backgroundColor: '#009387',
@@ -214,5 +225,5 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderBottomColor: '#737373',
     borderBottomWidth: StyleSheet.hairlineWidth,
-  }
+  },
 });

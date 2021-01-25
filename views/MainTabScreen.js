@@ -45,7 +45,7 @@ const MainTabScreen = () => (
       />
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={VentasStackScreen}
         options={{
           tabBarLabel: 'Ventas',
           tabBarColor: '#694fad',
@@ -117,4 +117,25 @@ const DetailsStackScreen = ({navigation}) => (
         }} />
 </DetailsStack.Navigator>
 );
-  
+
+const VentasStackScreen = ({navigation}) => (
+  <DetailsStack.Navigator screenOptions={{
+          headerStyle: {
+          backgroundColor: '#1f65ff',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+          fontWeight: 'bold'
+          }
+      }}>
+          <DetailsStack.Screen name="Ventas" component={ProfileScreen} options={{
+            headerLeft: () => (
+                <Icon.Button name="ios-menu" size={25} backgroundColor="#1f65ff" onPress={() => navigation.openDrawer()}></Icon.Button>
+            ),
+            headerRight: props => (
+              <Icon.Button name="ios-print-outline" size={25} backgroundColor="#1f65ff" onPress={() => navigation.openDrawer()}></Icon.Button>
+            )
+          }} />
+  </DetailsStack.Navigator>
+  );
+    
