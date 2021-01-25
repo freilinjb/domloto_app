@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 // import {View, Text, Button, TextInput, StyleSheet} from 'react-native';
 import {DataTable} from 'react-native-paper';
 // import React,{ useContext, useEffect } from 'react';
@@ -27,14 +27,15 @@ import VirtualKeyboard from 'react-native-virtual-keyboard';
 
 const ProfileScreen = () => {
   const [operacion, setOperacion] = useState('monto');
+  const [titulo, setTitulo] = useState('monto');
   const [numeros, setNumeros] = useState('');
   const [montos, setMontos] = useState(0);
-  const [tipoLoteria, setTipoLoteria] = useState('');
+  const [tipoJuego, setTipoJuego] = useState('');
   const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedObjects, setSelectedIObjects] = useState([]);
 
-  const changeMonto = (texto) => {
-    setMontos(Number(texto));
-  }
+  const [juegos, setJuegos] = useState([]);
+
   const changeText = (newText) => {
     if (newText.length <= 6 && operacion === 'numeros') {
       console.log('hola: ', newText);
@@ -51,11 +52,12 @@ const ProfileScreen = () => {
 
       if (contadorTipoJuego !== 0 && contadorTipoJuego < 3) {
         const tipo = ['SUPER PALE', 'TRIPLETA'];
-        setTipoLoteria(tipo[contadorTipoJuego - 1]);
+        setTipoJuego(tipo[contadorTipoJuego - 1]);
       } else if (contadorTipoJuego === 0) {
-        setTipoLoteria('PALE');
+        setTipoJuego('PALE');
+
       } else if (newText.length === 1) {
-        setTipoLoteria(' - - - ');
+        setTipoJuego(' - - - ');
       }
 
       setNumeros(temp);
@@ -65,18 +67,43 @@ const ProfileScreen = () => {
     }
   };
 
-  const cambiarOperacion = () => {
+  const procesar = () => {
     console.log('operacion antes: ', operacion);
+    console.log('selection: ', selectedItems.length);
 
-    if(operacion === 'numeros') {
-      setOperacion('monto');
-    } else {
-      setOperacion('numeros');
+    if(titulo == "procesar") { 
+      Alert.alert('Bien!!', 'Listo para guardar en el State', [{text: 'Okay'}]);
+
+      setMontos(0);
+      setNumeros('');
+      setSelectedItems([]);
+
+      selectedItems.forEach((key, index) => {
+        // console.log('key: ', key);
+        setJuegos({
+          ...juegos,
+          idJuego: key,
+          tipoJuego: tipoJuego,
+          numeros: numeros,
+          montos: montos
+        });
+      });
     }
     
-
-    console.log('operacion: despues', operacion);
+    console.log('operacion: despues', juegos);
   }
+
+  useEffect(() => {
+    if(montos > 0 && numeros.length > 0 && selectedItems.length > 0) {
+      setTitulo("procesar");
+    } else if(montos === 0) {
+      setTitulo("monto");
+    } else if(numeros.length === 0) {
+      setTitulo("numeros");
+    } else if(selectedItems.length === 0) {
+      setTitulo("seleccione una loteria");
+    }
+  },[montos, numeros, selectedItems]);
 
   const items = [
     // this is the parent or 'item'
@@ -116,6 +143,12 @@ const ProfileScreen = () => {
   const onSelectedItemsChange = (selectedItems) => {
     setSelectedItems(selectedItems);
   };
+
+  const onSelectedItemObjectsChange = (selectionObject) => {
+    setSelectedIObjects(selectedItems);
+    console.log('selectionObject: ', selectionObject);
+    console.log('objectonSelectedItemObjectsChange: ', selectionObject);
+  }
 
 
   // const
@@ -180,6 +213,9 @@ const ProfileScreen = () => {
             showDropDowns={true}
             readOnlyHeadings={true}
             onSelectedItemsChange={onSelectedItemsChange}
+            onSelectedItemObjectsChange={onSelectedItemObjectsChange}
+            expandDropDowns={true}
+            searchPlaceholderText="Buscar Loterias"
             selectedItems={selectedItems}
           />
         </View>
@@ -196,18 +232,16 @@ const ProfileScreen = () => {
             onPress={ ()=> setOperacion("monto")}
           >
 
-                <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', backgroundColor: '#fff', width: '99%'}}>
-            {/* {tipoLoteria.length > 0 ? tipoLoteria : ' -  -  - '} */}
-            {montos > 0 ? `RD$ ${montos}.00` : '$RD 0.00'}
-            {/* $100.00 */}
-          </Text>
+            <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', backgroundColor: '#fff', width: '99%'}}>
+              {montos > 0 ? `RD$ ${montos}.00` : '$RD 0.00'}
+            </Text>
           </TouchableOpacity>
           
         </View>
         {/* SEPARADOR */}
-        <View style={styles.separator} />
-        <Text style={{fontSize: 20,fontWeight: 'bold',textAlign: 'center', marginTop: 10, width: '100%', backgroundColor: '#fff', borderRadius: 30}}>
-            {tipoLoteria.length > 0 ? ` --::  ${tipoLoteria}  ::--` : ' -  -  - '}
+        {/* <View style={{backgroundColor: 'black'}}/> */}
+          <Text style={{fontSize: 20,fontWeight: 'bold',textAlign: 'center', marginTop: 10, width: '100%', backgroundColor: '#000', color:'#fff'}}>
+              {tipoJuego.length > 0 ? ` --::  ${tipoJuego}  ::--` : ' -  -  - '}
           </Text>
         <View style={{marginBottom: 10}}>
           {/* <Text>{texto.text}</Text> */}
@@ -245,8 +279,8 @@ const ProfileScreen = () => {
         </View>
 
         <Surface>
-        <Button title={operacion == "monto" ?  montos === 0 ? "MONTO" : "PROCESAR"  : operacion} color="#000000"
-          onPress={() => cambiarOperacion()}
+        <Button title={titulo} color="#000000"
+          onPress={() => procesar()}
         />        
         </Surface>
       </View>
