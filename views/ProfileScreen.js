@@ -1,20 +1,14 @@
-import React, {useState, useEffect} from 'react';
-// import {View, Text, Button, TextInput, StyleSheet} from 'react-native';
+import React, {useState, useEffect, Fragment, useContext} from 'react';
 import {DataTable} from 'react-native-paper';
-// import React,{ useContext, useEffect } from 'react';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {
   View,
   Text,
   TouchableOpacity,
-  TouchableHighlight,
-  Keyboard,
-  TextInput,
   Platform,
   StyleSheet,
   Button,
-  StatusBar,
   Alert,
   ScrollView,
 } from 'react-native';
@@ -25,7 +19,15 @@ import Feather from 'react-native-vector-icons/Feather';
 import {Surface, Divider} from 'react-native-paper';
 import VirtualKeyboard from 'react-native-virtual-keyboard';
 
+import ListarJuegos from '../components/ListarJuegos';
+import LotteryContext from '../context/lottery/lotteryContext';
+import {AuthContext} from '../context/auth/authContext';
+
 const ProfileScreen = () => {
+
+  const { getSorteos, sorteos } = useContext(LotteryContext);
+  const { token } = useContext(AuthContext);
+
   const [operacion, setOperacion] = useState('monto');
   const [titulo, setTitulo] = useState('monto');
   const [numeros, setNumeros] = useState('');
@@ -70,25 +72,33 @@ const ProfileScreen = () => {
   const procesar = () => {
     console.log('operacion antes: ', operacion);
     console.log('selection: ', selectedItems.length);
+    console.log('selectedObjects: ', selectedObjects);
 
     if(titulo == "procesar") { 
       Alert.alert('Bien!!', 'Listo para guardar en el State', [{text: 'Okay'}]);
 
-      setMontos(0);
-      setNumeros('');
-      setSelectedItems([]);
 
-      selectedItems.forEach((key, index) => {
-        // console.log('key: ', key);
-        setJuegos({
+      selectedObjects.forEach((key, index) => {
+        console.log('key: ', key);
+        console.log('index: ', index);
+
+        setJuegos([...juegos,{
           ...juegos,
-          idJuego: key,
+          idJuego: key.id,
+          nombreJuego: key.name,
           tipoJuego: tipoJuego,
           numeros: numeros,
           montos: montos
-        });
+        }]);
+
       });
     }
+
+    console.log('Juegos: ', juegos);
+    
+    setMontos(0);
+    setNumeros('');
+    setSelectedItems([]);
     
     console.log('operacion: despues', juegos);
   }
@@ -105,13 +115,50 @@ const ProfileScreen = () => {
     }
   },[montos, numeros, selectedItems]);
 
+  useEffect(() => {
+    getSorteos();
+
+    console.log('sorteos:' , sorteos);
+    console.log('token: ', token);
+  }, []);
+
   const items = [
     // this is the parent or 'item'
     {
       name: 'Nacional',
       id: 0,
       // these are the children or 'sub items'
-      children: [
+      juegos: [
+        {
+          name: 'Juega + Pega +',
+          id: 10,
+        },
+        {
+          name: 'Gana Más',
+          id: 17,
+        },
+        {
+          name: 'Lotería Nacional',
+          id: 13,
+        },
+        {
+          name: 'Pega 3 Más',
+          id: 14,
+        },
+        {
+          name: 'Loto Pool',
+          id: 15,
+        },
+        {
+          name: 'Quiniela Leidsa',
+          id: 16,
+        },
+      ],
+    },{
+      name: 'La Real',
+      id: 1,
+      // these are the children or 'sub items'
+      juegos: [
         {
           name: 'Juega + Pega +',
           id: 10,
@@ -145,15 +192,35 @@ const ProfileScreen = () => {
   };
 
   const onSelectedItemObjectsChange = (selectionObject) => {
-    setSelectedIObjects(selectedItems);
+    setSelectedIObjects(selectionObject);
     console.log('selectionObject: ', selectionObject);
-    console.log('objectonSelectedItemObjectsChange: ', selectionObject);
+    // console.log('objectonSelectedItemObjectsChange: ', selectionObject);
   }
 
+  useEffect(() => {
+    console.log('typeoff', typeof juegos);
+    console.log('sorteosItem: ', items);
+  },[]);
 
-  // const
   return (
     <>
+    {juegos.map( (juego,index) => {
+                const { idJuego, nombreJuego, numeros, montos, tipoJuego } = juego;
+                return (
+                  <Fragment key={index+numeros+idJuego}>
+                  <DataTable.Row key={idJuego+numeros}>
+                    <DataTable.Cell>fff</DataTable.Cell>
+                    <DataTable.Cell>{tipoJuego}</DataTable.Cell>
+                    <DataTable.Cell numeric>{numeros}</DataTable.Cell>
+                    <DataTable.Cell numeric>{montos}</DataTable.Cell>
+                    <DataTable.Cell numeric>{nombreJuego}</DataTable.Cell>
+                    <DataTable.Cell numeric>
+                      <FontAwesome name="user-o" color="#000" size={20}/>
+                    </DataTable.Cell>
+                  </DataTable.Row>
+                </Fragment>
+                )
+              })}
           <ScrollView>
 
       <View style={[styles.container,{marginHorizontal: '2%'}]}>
@@ -171,44 +238,28 @@ const ProfileScreen = () => {
                 <DataTable.Title numeric>Numeros</DataTable.Title>
                 <DataTable.Title numeric>Cantidad</DataTable.Title>
                 <DataTable.Title numeric>Accion</DataTable.Title>
+                <DataTable.Title numeric>Loteria</DataTable.Title>
               </DataTable.Header>
-
-              <DataTable.Row>
-                <DataTable.Cell>1</DataTable.Cell>
-                <DataTable.Cell>TRIPLETA</DataTable.Cell>
-                <DataTable.Cell numeric>10 - 45 -10</DataTable.Cell>
-                <DataTable.Cell numeric>RD$ 50.00</DataTable.Cell>
-                <DataTable.Cell numeric>
-                  <FontAwesome name="user-o" color="#000" size={20}/>
-                </DataTable.Cell>
-              </DataTable.Row>
-
-              <DataTable.Row>
-                <DataTable.Cell>2</DataTable.Cell>
-                <DataTable.Cell>TRIPLETA</DataTable.Cell>
-                <DataTable.Cell numeric>10 - 45 -10</DataTable.Cell>
-                <DataTable.Cell numeric>                  
-                  <FontAwesome name="user-o" color="#000" size={20}/>
-                </DataTable.Cell>
-              </DataTable.Row>
-
-              <DataTable.Pagination
+              
+              
+              {/* {sorteos.map(hola => (<Text>Hola</Text>))} */}
+              {/* <DataTable.Pagination
                 page={1}
                 numberOfPages={3}
                 onPageChange={(page) => {
                   console.log(page);
                 }}
                 label="1-2 of 6"
-              />
+              /> */}
             </DataTable>
         {/* </LinearGradient> */}
         </Surface>
         <View style={{backgroundColor: '#fff', borderRadius: 5, marginBottom: 15, borderRadius: 10}}>
-          <SectionedMultiSelect
-            items={items}
+        <SectionedMultiSelect
+            items={sorteos}
             IconRenderer={Icon}
             uniqueKey="id"
-            subKey="children"
+            subKey="juegos"
             selectText="Seleccione la loteria..."
             showDropDowns={true}
             readOnlyHeadings={true}
@@ -217,6 +268,8 @@ const ProfileScreen = () => {
             expandDropDowns={true}
             searchPlaceholderText="Buscar Loterias"
             selectedItems={selectedItems}
+            confirmText="Confirmar"
+            removeAllText="Todos Removidos"
           />
         </View>
         <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around', borderRadius: 30, width: '100%'}}>
@@ -267,7 +320,7 @@ const ProfileScreen = () => {
                 // rowStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}
                 cellStyle={{borderWidth: 0.5, borderColor: '#000000', backgroundColor: '#FFDA00'}}
                 onPress={(texto) => setMontos(Number(texto))}
-                backspaceImg={true}
+                // backspaceImg={true}
                 // style={{fontSize: 30}}
               />
           )}

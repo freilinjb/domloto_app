@@ -21,7 +21,10 @@ import { DrawerContent } from './views/DrawerContent';
 
 //Importar los state del context
 import AuthState from './context/auth/authState';
+import LotteryState from './context/lottery/lotteryState';
+
 import { AuthContextApp } from './context/auth/authContext';
+
 // import AuthContext from './context/auth/authContext';
 
 const Drawer = createDrawerNavigator();
@@ -131,6 +134,7 @@ const App = () => {
     <>
       <AuthContextApp.Provider value={authContextApp}>
       <AuthState>
+      <LotteryState>
         <StatusBar translucent={true} backgroundColor={'transparent'}/>
         <NavigationContainer>
         { loginState.userToken !== null ? (
@@ -147,6 +151,7 @@ const App = () => {
             <RootStackScreen/>
         }
         </NavigationContainer>
+        </LotteryState>
       </AuthState>
       </AuthContextApp.Provider>
     </>
