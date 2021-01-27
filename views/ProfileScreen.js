@@ -11,6 +11,7 @@ import {
   Button,
   Alert,
   ScrollView,
+  StatusBar
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -24,9 +25,8 @@ import LotteryContext from '../context/lottery/lotteryContext';
 import {AuthContext} from '../context/auth/authContext';
 
 const ProfileScreen = () => {
-
-  const { getSorteos, sorteos } = useContext(LotteryContext);
-  const { token } = useContext(AuthContext);
+  const {getSorteos, sorteos} = useContext(LotteryContext);
+  const {token} = useContext(AuthContext);
 
   const [operacion, setOperacion] = useState('monto');
   const [titulo, setTitulo] = useState('monto');
@@ -57,14 +57,12 @@ const ProfileScreen = () => {
         setTipoJuego(tipo[contadorTipoJuego - 1]);
       } else if (contadorTipoJuego === 0) {
         setTipoJuego('PALE');
-
       } else if (newText.length === 1) {
         setTipoJuego(' - - - ');
       }
 
       setNumeros(temp);
-    }
-     else {
+    } else {
       Alert.alert('Error!', 'Para donde vas tiguere', [{text: 'Okay'}]);
     }
   };
@@ -74,118 +72,63 @@ const ProfileScreen = () => {
     console.log('selection: ', selectedItems.length);
     console.log('selectedObjects: ', selectedObjects);
 
-    if(titulo == "procesar") { 
-      Alert.alert('Bien!!', 'Listo para guardar en el State', [{text: 'Okay'}]);
+    if(operacion === 'procesar') {
+      setOperacion('monto');
+    } else { 
+      setOperacion('procesar');
+    }
 
+    if (titulo == 'procesar' && selectedItems.length > 0) {
+      Alert.alert('Bien!!', 'Listo para guardar en el State', [{text: 'Okay'}]);
 
       selectedObjects.forEach((key, index) => {
         console.log('key: ', key);
         console.log('index: ', index);
-
-        setJuegos([...juegos,{
+        const id = juegos.length+1;
+        setJuegos([
           ...juegos,
-          idJuego: key.id,
-          nombreJuego: key.name,
-          tipoJuego: tipoJuego,
-          numeros: numeros,
-          montos: montos
-        }]);
-
+          {
+            id,
+            idJuego: key.id,
+            nombreJuego: key.name,
+            tipoJuego: tipoJuego,
+            numeros: numeros,
+            montos: montos,
+          },
+        ]);
       });
+
+      console.log('Juegos: ', selectedObjects);
+
+      setMontos(0);
+      setNumeros('');
+      setSelectedItems([]);
+      setSelectedIObjects([]);
+
+      console.log('operacion: despues', juegos);
     }
 
-    console.log('Juegos: ', juegos);
     
-    setMontos(0);
-    setNumeros('');
-    setSelectedItems([]);
-    
-    console.log('operacion: despues', juegos);
-  }
+  };
 
   useEffect(() => {
-    if(montos > 0 && numeros.length > 0 && selectedItems.length > 0) {
-      setTitulo("procesar");
-    } else if(montos === 0) {
-      setTitulo("monto");
-    } else if(numeros.length === 0) {
-      setTitulo("numeros");
-    } else if(selectedItems.length === 0) {
-      setTitulo("seleccione una loteria");
+    if (montos > 0 && numeros.length > 0 && selectedItems.length > 0) {
+      setTitulo('procesar');
+    } else if (montos === 0) {
+      setTitulo('monto');
+    } else if (numeros.length === 0) {
+      setTitulo('numeros');
+    } else if (selectedItems.length === 0) {
+      setTitulo('seleccione una loteria');
     }
-  },[montos, numeros, selectedItems]);
+  }, [montos, numeros, selectedItems]);
 
   useEffect(() => {
     getSorteos();
 
-    console.log('sorteos:' , sorteos);
+    console.log('sorteos:', sorteos);
     console.log('token: ', token);
   }, []);
-
-  const items = [
-    // this is the parent or 'item'
-    {
-      name: 'Nacional',
-      id: 0,
-      // these are the children or 'sub items'
-      juegos: [
-        {
-          name: 'Juega + Pega +',
-          id: 10,
-        },
-        {
-          name: 'Gana Más',
-          id: 17,
-        },
-        {
-          name: 'Lotería Nacional',
-          id: 13,
-        },
-        {
-          name: 'Pega 3 Más',
-          id: 14,
-        },
-        {
-          name: 'Loto Pool',
-          id: 15,
-        },
-        {
-          name: 'Quiniela Leidsa',
-          id: 16,
-        },
-      ],
-    },{
-      name: 'La Real',
-      id: 1,
-      // these are the children or 'sub items'
-      juegos: [
-        {
-          name: 'Juega + Pega +',
-          id: 10,
-        },
-        {
-          name: 'Gana Más',
-          id: 17,
-        },
-        {
-          name: 'Lotería Nacional',
-          id: 13,
-        },
-        {
-          name: 'Pega 3 Más',
-          id: 14,
-        },
-        {
-          name: 'Loto Pool',
-          id: 15,
-        },
-        {
-          name: 'Quiniela Leidsa',
-          id: 16,
-        },
-      ],
-    }
-  ];
 
   const onSelectedItemsChange = (selectedItems) => {
     setSelectedItems(selectedItems);
@@ -194,151 +137,170 @@ const ProfileScreen = () => {
   const onSelectedItemObjectsChange = (selectionObject) => {
     setSelectedIObjects(selectionObject);
     console.log('selectionObject: ', selectionObject);
-    // console.log('objectonSelectedItemObjectsChange: ', selectionObject);
-  }
-
-  useEffect(() => {
-    console.log('typeoff', typeof juegos);
-    console.log('sorteosItem: ', items);
-  },[]);
+  };
 
   return (
     <>
-    {juegos.map( (juego,index) => {
-                const { idJuego, nombreJuego, numeros, montos, tipoJuego } = juego;
-                return (
-                  <Fragment key={index+numeros+idJuego}>
-                  <DataTable.Row key={idJuego+numeros}>
-                    <DataTable.Cell>fff</DataTable.Cell>
-                    <DataTable.Cell>{tipoJuego}</DataTable.Cell>
-                    <DataTable.Cell numeric>{numeros}</DataTable.Cell>
-                    <DataTable.Cell numeric>{montos}</DataTable.Cell>
-                    <DataTable.Cell numeric>{nombreJuego}</DataTable.Cell>
-                    <DataTable.Cell numeric>
-                      <FontAwesome name="user-o" color="#000" size={20}/>
-                    </DataTable.Cell>
-                  </DataTable.Row>
-                </Fragment>
-                )
-              })}
-          <ScrollView>
+      {/* <ScrollView> */}
+      <StatusBar backgroundColor="#FFDA00" barStyle="dark-content"/>
+      <View style={[styles.container, {marginHorizontal: '2%'}]}>
+        {/* <View style={styles.header}>
+        <Text style={styles.text_header}>Bienvenido!</Text>
+        </View> */}
+                    <View style={styles.header}>
 
-      <View style={[styles.container,{marginHorizontal: '2%'}]}>
-        {/* <View style={styles.header}> */}
-          {/* <Text style={styles.text_header}>Bienvenido!</Text> */}
-        {/* </View> */}
-        
-        <Surface style={{marginBottom: 10, marginTop: 10}}>
-        {/* <LinearGradient colors={['#D8CB00', '#FFDA00']}> */}
+        {juegos.length > 0 ?  (
+                      <Surface style={{marginBottom: 10, marginTop: 10, borderRadius: 20}}>
+                      <ScrollView style={{height: '60%', position: 'relative', left: 0}}>
 
-            <DataTable>
-              <DataTable.Header>
-                <DataTable.Title>#</DataTable.Title>
-                <DataTable.Title>Tipo de juego</DataTable.Title>
-                <DataTable.Title numeric>Numeros</DataTable.Title>
-                <DataTable.Title numeric>Cantidad</DataTable.Title>
-                <DataTable.Title numeric>Accion</DataTable.Title>
-                <DataTable.Title numeric>Loteria</DataTable.Title>
-              </DataTable.Header>
-              
-              
-              {/* {sorteos.map(hola => (<Text>Hola</Text>))} */}
-              {/* <DataTable.Pagination
-                page={1}
-                numberOfPages={3}
-                onPageChange={(page) => {
-                  console.log(page);
-                }}
-                label="1-2 of 6"
-              /> */}
-            </DataTable>
-        {/* </LinearGradient> */}
-        </Surface>
-        <View style={{backgroundColor: '#fff', borderRadius: 5, marginBottom: 15, borderRadius: 10}}>
-        <SectionedMultiSelect
-            items={sorteos}
-            IconRenderer={Icon}
-            uniqueKey="id"
-            subKey="juegos"
-            selectText="Seleccione la loteria..."
-            showDropDowns={true}
-            readOnlyHeadings={true}
-            onSelectedItemsChange={onSelectedItemsChange}
-            onSelectedItemObjectsChange={onSelectedItemObjectsChange}
-            expandDropDowns={true}
-            searchPlaceholderText="Buscar Loterias"
-            selectedItems={selectedItems}
-            confirmText="Confirmar"
-            removeAllText="Todos Removidos"
-          />
-        </View>
-        <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around', borderRadius: 30, width: '100%'}}>
-          <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around'}}
-            onPress={ ()=> setOperacion("numeros")}
-          >
-            <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', backgroundColor: '#fff', width: '99%' }}>
-              {/* {texto.length > 0 ? texto : ' -  -  - '} */}
-              {numeros ? numeros : ' -  -  - '}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around'}}
-            onPress={ ()=> setOperacion("monto")}
-          >
-
-            <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', backgroundColor: '#fff', width: '99%'}}>
-              {montos > 0 ? `RD$ ${montos}.00` : '$RD 0.00'}
-            </Text>
-          </TouchableOpacity>
+                      {/* <LinearGradient colors={['#D8CB00', '#FFDA00']}> */}
+            
+                      <DataTable>
+                        <DataTable.Header style={{backgroundColor: '#FFDA00', borderColor: '#fff', borderRadius: 20}}>
+                          <DataTable.Title>Tipo</DataTable.Title>
+                          <DataTable.Title>Numeros</DataTable.Title>
+                          <DataTable.Title>Cantidad</DataTable.Title>
+                          <DataTable.Title>Loteria</DataTable.Title>
+                          <DataTable.Title numeric>Accion</DataTable.Title>
+                        </DataTable.Header>
+                        
+                        {juegos.map((juego, index) => {
+                          const {id, idJuego, nombreJuego, numeros, montos, tipoJuego} = juego;
+                          return (
+                            <Fragment key={index + numeros + idJuego}>
+                              <DataTable.Row key={idJuego + numeros}>
+                                {/* <DataTable.Cell>{tipoJuego}</DataTable.Cell> */}
+                                <DataTable.Cell>{tipoJuego === "PALE" ? "PL" : tipoJuego === "SUPER PALE" ? "SP" : "TR"}</DataTable.Cell>
+                                <DataTable.Cell >{numeros}</DataTable.Cell>
+                                <DataTable.Cell>{montos}</DataTable.Cell>
+                                <DataTable.Cell>{nombreJuego}</DataTable.Cell>
+                                <DataTable.Cell numeric>
+                                <TouchableOpacity onPress={(_id)=> setJuegos((juegos) => {
+                                  return juegos.filter((juego) => juego.id !== id);
+                                })}>
+                                  <FontAwesome name="remove" color="#000" size={20} />
+                                </TouchableOpacity>
+                                </DataTable.Cell>
+                              </DataTable.Row>
+                            </Fragment>
+                          );
+                        })}
+                      </DataTable>
+                    </ScrollView>
+                    </Surface>
+        )
+        :
+        (
+          <Text style={[styles.text_header,{color: '#000', textAlign: 'center', alignContent: 'center', paddingTop: 100}]}>No ha registrado jugadas!</Text>
+        )}
+                    </View>
           
-        </View>
-        {/* SEPARADOR */}
-        {/* <View style={{backgroundColor: 'black'}}/> */}
-          <Text style={{fontSize: 20,fontWeight: 'bold',textAlign: 'center', marginTop: 10, width: '100%', backgroundColor: '#000', color:'#fff'}}>
-              {tipoJuego.length > 0 ? ` --::  ${tipoJuego}  ::--` : ' -  -  - '}
+        <View style={[styles.footer,{height: '60%', position: 'absolute', left: 0, right: 0, bottom: 0}]}>
+          <View
+            style={{
+              borderRadius: 5,
+            }}>
+            <SectionedMultiSelect
+              items={sorteos}
+              IconRenderer={Icon}
+              uniqueKey="id"
+              subKey="juegos"
+              selectText="Seleccione la loteria..."
+              showDropDowns={true}
+              readOnlyHeadings={true}
+              onSelectedItemsChange={onSelectedItemsChange}
+              onSelectedItemObjectsChange={onSelectedItemObjectsChange}
+              expandDropDowns={true}
+              searchPlaceholderText="Buscar Loterias"
+              selectedItems={selectedItems}
+              confirmText="Confirmar"
+              removeAllText="Todos Removidos"
+              colors={{primary: "#000"}}
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'space-around',
+              borderRadius: 30,
+              width: '100%',
+            }}>
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+              }}
+              onPress={() => setOperacion('numeros')}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  backgroundColor: '#fff',
+                  width: '99%',
+                }}>
+                {/* {texto.length > 0 ? texto : ' -  -  - '} */}
+                {numeros ? numeros : ' -  -  - '}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+              }}
+              onPress={() => setOperacion('monto')}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  backgroundColor: '#fff',
+                  width: '99%',
+                }}>
+                {montos > 0 ? `RD$ ${montos}.00` : '$RD 0.00'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <Text
+            style={{
+              fontSize: 15,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              width: '100%',
+              backgroundColor: '#000',
+              color: '#fff'
+            }}>
+            {tipoJuego.length > 0 ? ` --::  ${tipoJuego}  ::--` : ' -  -  - '}
           </Text>
-        <View style={{marginBottom: 10}}>
-          {/* <Text>{texto.text}</Text> */}
-
-          {operacion === 'numeros' ? 
-          (
-            <VirtualKeyboard
+          <View style={{marginBottom: 5}}>
+            {operacion === 'numeros' ? (
+              <VirtualKeyboard
                 key={1}
                 color="#000000"
                 pressMode="string"
-                // rowStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}
                 cellStyle={{borderWidth: 0.5, borderColor: '#000000'}}
                 onPress={(val) => changeText(val)}
-                // style={{fontSize: 30}}
               />
-          )
-          :
-          (
-            <VirtualKeyboard
+            ) : (
+              <VirtualKeyboard
                 key={2}
                 color="#000000"
                 pressMode="string"
-                // rowStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}
-                cellStyle={{borderWidth: 0.5, borderColor: '#000000', backgroundColor: '#FFDA00'}}
+                cellStyle={{
+                  borderWidth: 0.5,
+                  borderColor: '#000000',
+                  backgroundColor: '#FFDA00',
+                }}
                 onPress={(texto) => setMontos(Number(texto))}
-                // backspaceImg={true}
-                // style={{fontSize: 30}}
               />
-          )}
-          <View>
-      </View>
-          <View>
+            )}
+          </View>
+          <Button title={titulo} color="#000000" onPress={() => procesar()} />
         </View>
-
-        </View>
-
-        <Surface>
-        <Button title={titulo} color="#000000"
-          onPress={() => procesar()}
-        />        
-        </Surface>
       </View>
-      </ScrollView>
-
     </>
   );
 };
@@ -356,18 +318,20 @@ const styles = StyleSheet.create({
     // backgroundColor: '#009387',
   },
   header: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingHorizontal: 20,
-    paddingBottom: 50,
+    paddingTop: 30,
   },
   footer: {
-    flex: 3,
+    flex: 2,
     backgroundColor: '#fff',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingHorizontal: 20,
     paddingVertical: 30,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '60%'
   },
   text_header: {
     color: '#fff',
@@ -391,12 +355,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#FF0000',
     paddingBottom: 5,
-  },
-  textInput: {
-    flex: 1,
-    marginTop: Platform.OS === 'ios' ? 0 : -12,
-    paddingLeft: 10,
-    color: '#05375a',
   },
   errorMsg: {
     color: '#FF0000',
