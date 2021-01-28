@@ -1,5 +1,5 @@
 import React, {useState, useEffect, Fragment, useContext} from 'react';
-import {DataTable} from 'react-native-paper';
+import { Snackbar } from 'react-native-paper';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {
@@ -20,7 +20,9 @@ import Feather from 'react-native-vector-icons/Feather';
 import {Surface, Divider} from 'react-native-paper';
 import VirtualKeyboard from 'react-native-virtual-keyboard';
 
-import ListarJuegos from '../components/ListarJuegos';
+import SelectorMultiple from '../components/SelectorMultiple';
+import ListarJugadas from '../components/ListarJugadas';
+
 import LotteryContext from '../context/lottery/lotteryContext';
 import {AuthContext} from '../context/auth/authContext';
 
@@ -40,11 +42,11 @@ const ProfileScreen = () => {
 
   const changeText = (newText) => {
     if (newText.length <= 6 && operacion === 'numeros') {
-      console.log('hola: ', newText);
+      // console.log('hola: ', newText);
       let contadorTipoJuego = 0;
       let temp = '';
       for (let i = 0; i < newText.length; i++) {
-        console.log('hola: ', newText[i]);
+        // console.log('hola: ', newText[i]);
         if (i > 0 && i % 2 == 0) {
           temp += ' - ';
           contadorTipoJuego++;
@@ -68,9 +70,9 @@ const ProfileScreen = () => {
   };
 
   const procesar = () => {
-    console.log('operacion antes: ', operacion);
-    console.log('selection: ', selectedItems.length);
-    console.log('selectedObjects: ', selectedObjects);
+    // console.log('operacion antes: ', operacion);
+    // console.log('selection: ', selectedItems.length);
+    // console.log('selectedObjects: ', selectedObjects);
 
     if(operacion === 'procesar') {
       setOperacion('monto');
@@ -79,26 +81,26 @@ const ProfileScreen = () => {
     }
 
     if (titulo == 'procesar' && selectedItems.length > 0) {
-      Alert.alert('Bien!!', 'Listo para guardar en el State', [{text: 'Okay'}]);
+      // Alert.alert('Bien!!', 'Listo para guardar en el State', [{text: 'Okay'}]);
 
+      let objectTemp = [];
       selectedObjects.forEach((key, index) => {
-        console.log('key: ', key);
-        console.log('index: ', index);
-        const id = juegos.length+1;
-        setJuegos([
-          ...juegos,
-          {
-            id,
+        
+        objectTemp.push({
+            id: Math.random(),
             idJuego: key.id,
             nombreJuego: key.name,
             tipoJuego: tipoJuego,
             numeros: numeros,
             montos: montos,
-          },
-        ]);
+        });
       });
 
-      console.log('Juegos: ', selectedObjects);
+      juegos.forEach((key, index) => {
+        objectTemp.push(key);
+      });
+
+      setJuegos(objectTemp);
 
       setMontos(0);
       setNumeros('');
@@ -107,8 +109,6 @@ const ProfileScreen = () => {
 
       console.log('operacion: despues', juegos);
     }
-
-    
   };
 
   useEffect(() => {
@@ -126,9 +126,7 @@ const ProfileScreen = () => {
   useEffect(() => {
     getSorteos();
 
-    console.log('sorteos:', sorteos);
-    console.log('token: ', token);
-  }, []);
+  }, [juegos]);
 
   const onSelectedItemsChange = (selectedItems) => {
     setSelectedItems(selectedItems);
@@ -136,88 +134,26 @@ const ProfileScreen = () => {
 
   const onSelectedItemObjectsChange = (selectionObject) => {
     setSelectedIObjects(selectionObject);
-    console.log('selectionObject: ', selectionObject);
   };
 
   return (
     <>
-      {/* <ScrollView> */}
       <StatusBar backgroundColor="#FFDA00" barStyle="dark-content"/>
       <View style={[styles.container, {marginHorizontal: '2%'}]}>
-        {/* <View style={styles.header}>
-        <Text style={styles.text_header}>Bienvenido!</Text>
-        </View> */}
-                    <View style={styles.header}>
-
-        {juegos.length > 0 ?  (
-                      <Surface style={{marginBottom: 10, marginTop: 10, borderRadius: 20}}>
-                      <ScrollView style={{height: '60%', position: 'relative', left: 0}}>
-
-                      {/* <LinearGradient colors={['#D8CB00', '#FFDA00']}> */}
-            
-                      <DataTable>
-                        <DataTable.Header style={{backgroundColor: '#FFDA00', borderColor: '#fff', borderRadius: 20}}>
-                          <DataTable.Title>Tipo</DataTable.Title>
-                          <DataTable.Title>Numeros</DataTable.Title>
-                          <DataTable.Title>Cantidad</DataTable.Title>
-                          <DataTable.Title>Loteria</DataTable.Title>
-                          <DataTable.Title numeric>Accion</DataTable.Title>
-                        </DataTable.Header>
-                        
-                        {juegos.map((juego, index) => {
-                          const {id, idJuego, nombreJuego, numeros, montos, tipoJuego} = juego;
-                          return (
-                            <Fragment key={index + numeros + idJuego}>
-                              <DataTable.Row key={idJuego + numeros}>
-                                {/* <DataTable.Cell>{tipoJuego}</DataTable.Cell> */}
-                                <DataTable.Cell>{tipoJuego === "PALE" ? "PL" : tipoJuego === "SUPER PALE" ? "SP" : "TR"}</DataTable.Cell>
-                                <DataTable.Cell >{numeros}</DataTable.Cell>
-                                <DataTable.Cell>{montos}</DataTable.Cell>
-                                <DataTable.Cell>{nombreJuego}</DataTable.Cell>
-                                <DataTable.Cell numeric>
-                                <TouchableOpacity onPress={(_id)=> setJuegos((juegos) => {
-                                  return juegos.filter((juego) => juego.id !== id);
-                                })}>
-                                  <FontAwesome name="remove" color="#000" size={20} />
-                                </TouchableOpacity>
-                                </DataTable.Cell>
-                              </DataTable.Row>
-                            </Fragment>
-                          );
-                        })}
-                      </DataTable>
-                    </ScrollView>
-                    </Surface>
-        )
-        :
-        (
-          <Text style={[styles.text_header,{color: '#000', textAlign: 'center', alignContent: 'center', paddingTop: 100}]}>No ha registrado jugadas!</Text>
-        )}
-                    </View>
+      <ListarJugadas
+          juegos={juegos}
+          setJuegos={setJuegos}
+        />
           
-        <View style={[styles.footer,{height: '60%', position: 'absolute', left: 0, right: 0, bottom: 0}]}>
-          <View
-            style={{
-              borderRadius: 5,
-            }}>
-            <SectionedMultiSelect
-              items={sorteos}
-              IconRenderer={Icon}
-              uniqueKey="id"
-              subKey="juegos"
-              selectText="Seleccione la loteria..."
-              showDropDowns={true}
-              readOnlyHeadings={true}
-              onSelectedItemsChange={onSelectedItemsChange}
-              onSelectedItemObjectsChange={onSelectedItemObjectsChange}
-              expandDropDowns={true}
-              searchPlaceholderText="Buscar Loterias"
-              selectedItems={selectedItems}
-              confirmText="Confirmar"
-              removeAllText="Todos Removidos"
-              colors={{primary: "#000"}}
-            />
-          </View>
+        <View style={[styles.footer,{height: '50%', position: 'absolute', left: 0, right: 0, bottom: 0}]}>
+
+          <SelectorMultiple
+            sorteos={sorteos}
+            Icon={Icon}
+            onSelectedItemsChange={onSelectedItemsChange}
+            onSelectedItemObjectsChange={onSelectedItemObjectsChange}
+            selectedItems={selectedItems}
+          />
           <View
             style={{
               flexDirection: 'row',
@@ -241,7 +177,6 @@ const ProfileScreen = () => {
                   backgroundColor: '#fff',
                   width: '99%',
                 }}>
-                {/* {texto.length > 0 ? texto : ' -  -  - '} */}
                 {numeros ? numeros : ' -  -  - '}
               </Text>
             </TouchableOpacity>
@@ -298,9 +233,21 @@ const ProfileScreen = () => {
               />
             )}
           </View>
-          <Button title={titulo} color="#000000" onPress={() => procesar()} />
+          {/* <Button title={titulo} color="#000000" onPress={() => procesar()} /> */}
+          
         </View>
       </View>
+      {/* <Snackbar
+          visible={true}
+            // onDismiss={onDismissSnackBar}
+            action={{
+              label: 'Undo',
+              onPress: () => {
+                // Do something
+              },
+            }}>
+        Hey there! I'm a Snackbar.
+      </Snackbar> */}
     </>
   );
 };
@@ -337,32 +284,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 30,
-  },
-  text_footer: {
-    color: '#05375a',
-    fontSize: 18,
-  },
-  action: {
-    flexDirection: 'row',
-    marginTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f2',
-    paddingBottom: 5,
-  },
-  actionError: {
-    flexDirection: 'row',
-    marginTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#FF0000',
-    paddingBottom: 5,
-  },
-  errorMsg: {
-    color: '#FF0000',
-    fontSize: 14,
-  },
-  button: {
-    alignItems: 'center',
-    marginTop: 50,
   },
   separator: {
     marginVertical: 8,

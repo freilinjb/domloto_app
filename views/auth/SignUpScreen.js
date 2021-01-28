@@ -62,7 +62,7 @@ const SignUpScreen = ({navigation}) => {
 
     return (
         <View style={styles.container}>
-            <StatusBar backgroundColor='#009387' barStyle='light-content'/>
+            <StatusBar backgroundColor='#FFDA00' barStyle='dark-content'/>
             <View style={styles.header}>
                 <Text style={styles.text_header}>Register Now!</Text>
             </View>
@@ -133,19 +133,19 @@ const SignUpScreen = ({navigation}) => {
 
                     <View style={styles.button}>
                         <TouchableOpacity style={styles.signIn} onPress={() => {}}>
-                            <LinearGradient colors={['#08d4c4', '#01ab9d']}style={styles.signIn}>
+                            <LinearGradient colors={['#FFDA00', '#CCAE00']}style={styles.signIn}>
                                 <Text style={[styles.textSign, {color:'#fff'}]}>Registrarse</Text>
                             </LinearGradient>
                         </TouchableOpacity>
 
                         <TouchableOpacity
                             onPress={() => navigation.goBack()} style={[styles.signIn, {
-                                borderColor: '#009387',
+                                borderColor: '#FFDA00',
                                 borderWidth: 1,
                                 marginTop: 15
                             }]}
                         >
-                            <Text style={[styles.textSign, {color: '#009387'}]}>Iniciar Sesion</Text>
+                            <Text style={[styles.textSign, {color: '#FFDA00'}]}>Iniciar Sesion</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
@@ -157,7 +157,7 @@ const SignUpScreen = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
       flex: 1, 
-      backgroundColor: '#009387'
+      backgroundColor: '#FFDA00'
     },
     header: {
         flex: 1,
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
         paddingVertical: 30
     },
     text_header: {
-        color: '#fff',
+        color: '#000',
         fontWeight: 'bold',
         fontSize: 30
     },
