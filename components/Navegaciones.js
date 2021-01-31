@@ -28,7 +28,7 @@ import {AuthContext} from '../context/auth/authContext';
 const Drawer = createDrawerNavigator();
 
 const Navegaciones = ({tokenLocal}) => {
-  const {token, autenticado, cargando, usuarioAutenticado} = useContext(AuthContext);
+  const {token, autenticado, cargando, usuarioAutenticado, } = useContext(AuthContext);
 
   
   useEffect(() => {
@@ -36,6 +36,7 @@ const Navegaciones = ({tokenLocal}) => {
     if (tokenLocal) {
         console.log('Token enviado: ',  tokenLocal);
         usuarioAutenticado(tokenLocal);
+
     }
 
 },[tokenLocal]);
@@ -52,7 +53,7 @@ const Navegaciones = ({tokenLocal}) => {
 
   return (
     <>
-        <LotteryState>
+        {/* <LotteryState> */}
           <StatusBar translucent={true} backgroundColor={'transparent'} />
           <NavigationContainer>
             { token !== null && autenticado === true ? (
@@ -72,7 +73,7 @@ const Navegaciones = ({tokenLocal}) => {
                 )
             } 
           </NavigationContainer>
-        </LotteryState>
+        {/* </LotteryState> */}
     </>
   );
 };

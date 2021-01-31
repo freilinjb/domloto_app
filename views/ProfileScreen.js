@@ -169,7 +169,7 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     getSorteos();
-  }, [juegos]);
+  }, []);
 
   const onSelectedItemsChange = (selectedItems) => {
     setSelectedItems(selectedItems);

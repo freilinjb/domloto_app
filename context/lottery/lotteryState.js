@@ -15,7 +15,8 @@ const LotteryState = props => {
 
     const initialState = {
         loterias: [],
-        sorteos: []
+        sorteos: [],
+        cargando: false
     }
 
     const [state, dispatch] = useReducer(lotteryReducer, initialState);
@@ -81,6 +82,7 @@ const LotteryState = props => {
             value={{
                 loterias: state.loterias,
                 sorteos: state.sorteos,
+                cargando: state.cargando,
                 getSorteos,
                 registrarTicket
             }}
