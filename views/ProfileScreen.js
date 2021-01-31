@@ -1,5 +1,5 @@
 import React, {useState, useEffect, Fragment, useContext} from 'react';
-import { Snackbar } from 'react-native-paper';
+import {Snackbar, ActivityIndicator} from 'react-native-paper';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {
@@ -8,16 +8,15 @@ import {
   TouchableOpacity,
   Platform,
   StyleSheet,
-  Button,
   Alert,
   ScrollView,
-  StatusBar
+  StatusBar,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-import {Surface, Divider} from 'react-native-paper';
+import {Surface, Divider, Button, IconButton, Colors} from 'react-native-paper';
 import VirtualKeyboard from 'react-native-virtual-keyboard';
 
 import SelectorMultiple from '../components/SelectorMultiple';
@@ -28,16 +27,18 @@ import {AuthContext} from '../context/auth/authContext';
 
 const ProfileScreen = () => {
   const {getSorteos, sorteos} = useContext(LotteryContext);
-  const {token} = useContext(AuthContext);
 
   const [operacion, setOperacion] = useState('monto');
   const [titulo, setTitulo] = useState('monto');
   const [numeros, setNumeros] = useState('');
   const [montos, setMontos] = useState(0);
+
+  const [mensaje, setMensaje] = useState(null);
+  const [visible, setVisible] = useState(false);
+
   const [tipoJuego, setTipoJuego] = useState('');
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedObjects, setSelectedIObjects] = useState([]);
-
   const [juegos, setJuegos] = useState([]);
 
   const changeText = (newText) => {
@@ -69,30 +70,70 @@ const ProfileScreen = () => {
     }
   };
 
-  const procesar = () => {
-    // console.log('operacion antes: ', operacion);
-    // console.log('selection: ', selectedItems.length);
-    // console.log('selectedObjects: ', selectedObjects);
+  const onDismissSnackBar = () => setVisible(false);
 
-    if(operacion === 'procesar') {
+  const cancelar  = () => {
+
+    if(juegos.length === 0) {
+      setMensaje('No se han guardado jugadas!!');
+      setVisible(true);
+    } else {
+
+    Alert.alert(
+      "Advertencia",
+      "Desea cancelar el Ticket",
+      [
+        {
+          text: "No",
+          style: "cancel"
+        },
+        { text: "Si", onPress: () => {
+          setMontos(0);
+          setJuegos([]);
+          setNumeros('');
+        }}
+      ],
+      { cancelable: false }
+    );
+
+    }
+  }
+
+  const imprimir =() => {
+    console.log('hola');
+  }
+
+  const procesar = async () => {
+    if (operacion === 'procesar') {
       setOperacion('monto');
-    } else { 
+    } else {
       setOperacion('procesar');
     }
 
+    if (montos === 0) {
+      setMensaje('Debe espesificar la cantidad de la jugada!');
+      setVisible(true);
+    }
+    if (numeros.length === 0) {
+      setMensaje('Debe espesificar los numeros de la');
+      setVisible(true);
+    }
+    if (selectedItems.length === 0) {
+      setMensaje('Debe seleccionar una loteria');
+      setVisible(true);
+    }
     if (titulo == 'procesar' && selectedItems.length > 0) {
       // Alert.alert('Bien!!', 'Listo para guardar en el State', [{text: 'Okay'}]);
 
       let objectTemp = [];
       selectedObjects.forEach((key, index) => {
-        
         objectTemp.push({
-            id: Math.random(),
-            idJuego: key.id,
-            nombreJuego: key.name,
-            tipoJuego: tipoJuego,
-            numeros: numeros,
-            montos: montos,
+          id: Math.random(),
+          idJuego: key.id,
+          nombreJuego: key.name,
+          tipoJuego: tipoJuego,
+          numeros: numeros,
+          montos: montos,
         });
       });
 
@@ -125,7 +166,6 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     getSorteos();
-
   }, [juegos]);
 
   const onSelectedItemsChange = (selectedItems) => {
@@ -138,116 +178,144 @@ const ProfileScreen = () => {
 
   return (
     <>
-      <StatusBar backgroundColor="#FFDA00" barStyle="dark-content"/>
+      <StatusBar backgroundColor="#FFDA00" barStyle="dark-content" />
       <View style={[styles.container, {marginHorizontal: '2%'}]}>
-      <ListarJugadas
-          juegos={juegos}
-          setJuegos={setJuegos}
-        />
-          
-        <View style={[styles.footer,{height: '50%', position: 'absolute', left: 0, right: 0, bottom: 0}]}>
+        <Snackbar
+          visible={visible}
+          onDismiss={onDismissSnackBar}
+          duration={3000}
+          action={{
+            label: 'Ok',
+            onPress: () => {
+              // Do something
+              console.log('hola');
+            },
+          }}>
+          {mensaje}
+        </Snackbar>
+        <ListarJugadas juegos={juegos} setJuegos={setJuegos} />
 
-          <SelectorMultiple
-            sorteos={sorteos}
-            Icon={Icon}
-            onSelectedItemsChange={onSelectedItemsChange}
-            onSelectedItemObjectsChange={onSelectedItemObjectsChange}
-            selectedItems={selectedItems}
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              justifyContent: 'space-around',
-              borderRadius: 30,
-              width: '100%',
-            }}>
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-              }}
-              onPress={() => setOperacion('numeros')}>
-              <Text
+        <View
+          style={[
+            styles.footer,
+            {height: '55%', position: 'absolute', left: 0, right: 0, bottom: 0},
+          ]}>
+          <ScrollView>
+            <SelectorMultiple
+              sorteos={sorteos}
+              Icon={Icon}
+              onSelectedItemsChange={onSelectedItemsChange}
+              onSelectedItemObjectsChange={onSelectedItemObjectsChange}
+              selectedItems={selectedItems}
+            />
+            <Surface style={styles.surface}>
+              <View
                 style={{
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                  backgroundColor: '#fff',
-                  width: '99%',
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  justifyContent: 'space-around',
+                  borderRadius: 30,
+                  width: '100%',
                 }}>
-                {numeros ? numeros : ' -  -  - '}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-              }}
-              onPress={() => setOperacion('monto')}>
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                  backgroundColor: '#fff',
-                  width: '99%',
-                }}>
-                {montos > 0 ? `RD$ ${montos}.00` : '$RD 0.00'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <Text
-            style={{
-              fontSize: 15,
-              fontWeight: 'bold',
-              textAlign: 'center',
-              width: '100%',
-              backgroundColor: '#000',
-              color: '#fff'
-            }}>
-            {tipoJuego.length > 0 ? ` --::  ${tipoJuego}  ::--` : ' -  -  - '}
-          </Text>
-          <View style={{marginBottom: 5}}>
-            {operacion === 'numeros' ? (
-              <VirtualKeyboard
-                key={1}
-                color="#000000"
-                pressMode="string"
-                cellStyle={{borderWidth: 0.5, borderColor: '#000000'}}
-                onPress={(val) => changeText(val)}
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                  }}
+                  onPress={() => setOperacion('numeros')}>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                      width: '99%',
+                    }}>
+                    {numeros ? numeros : ' -  -  - '}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                  }}
+                  onPress={() => setOperacion('monto')}>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                      width: '99%',
+                    }}>
+                    {montos > 0 ? `RD$ ${montos}.00` : '$RD 0.00'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </Surface>
+
+            <View style={{marginHorizontal: '2.5%'}}>
+            <View>
+              <IconButton
+                icon="printer-pos"
+                color="green"
+                size={30}
+                onPress={() => imprimir()}
+                style={{position: 'absolute'}}
               />
-            ) : (
-              <VirtualKeyboard
-                key={2}
-                color="#000000"
-                pressMode="string"
-                cellStyle={{
-                  borderWidth: 0.5,
-                  borderColor: '#000000',
-                  backgroundColor: '#FFDA00',
-                }}
-                onPress={(texto) => setMontos(Number(texto))}
+            </View>
+
+            <View style={{alignItems: 'center'}}>
+              <IconButton
+                icon="archive-arrow-up"
+                color="#FFDA00"
+                size={30}
+                onPress={() => procesar()}
+                style={{position: 'absolute'}}
               />
-            )}
-          </View>
-          {/* <Button title={titulo} color="#000000" onPress={() => procesar()} /> */}
-          
+            </View>
+
+            <View style={{alignItems: 'flex-end'}}>
+              <IconButton
+                icon="close-thick"
+                color="red"
+                size={30}
+                onPress={() => cancelar()}
+                style={{position: 'absolute'}}
+              />
+            </View>
+            </View>
+
+            <View style={{paddingTop: 20}}>
+              {operacion === 'numeros' ? (
+                <VirtualKeyboard
+                  key={1}
+                  color="#000000"
+                  pressMode="string"
+                  cellStyle={{borderWidth: 0.5, borderColor: '#000000'}}
+                  onPress={(val) => changeText(val)}
+                />
+              ) : (
+                <VirtualKeyboard
+                  key={2}
+                  color="#000000"
+                  pressMode="string"
+                  cellStyle={{
+                    borderWidth: 0.5,
+                    borderColor: '#000000',
+                    backgroundColor: '#e1e1e1',
+                  }}
+                  onPress={(texto) => setMontos(Number(texto))}
+                />
+              )}
+            </View>
+            {/* <Button title={titulo} color onPress={() => procesar()} /> */}
+          </ScrollView>
+          {/* <Button icon="camera" mode="contained" onPress={() => procesar()}>
+            Press me
+          </Button> */}
         </View>
       </View>
-      {/* <Snackbar
-          visible={true}
-            // onDismiss={onDismissSnackBar}
-            action={{
-              label: 'Undo',
-              onPress: () => {
-                // Do something
-              },
-            }}>
-        Hey there! I'm a Snackbar.
-      </Snackbar> */}
     </>
   );
 };
@@ -256,9 +324,9 @@ export default ProfileScreen;
 
 const styles = StyleSheet.create({
   surface: {
-    padding: 8,
+    padding: 5,
     elevation: 4,
-    margin: 10,
+    backgroundColor: '#e1e1e1',
   },
   container: {
     flex: 1,
@@ -272,13 +340,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    paddingHorizontal: 20,
     paddingVertical: 30,
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
-    height: '60%'
   },
   text_header: {
     color: '#fff',

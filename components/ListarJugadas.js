@@ -13,7 +13,6 @@ const ListarJugadas = ({setJuegos, juegos}) => {
     <View style={styles.header}>
         {juegos.length > 0 ?  (
            <Surface style={{marginBottom: 10, marginTop: 10, borderRadius: 20}}>
-           <ScrollView style={{height: '60%', position: 'relative', left: 0}}>
              {/* <LinearGradient colors={['#D8CB00', '#FFDA00']}> */}
              <DataTable key={Math.random()}>
                <DataTable.Header
@@ -23,11 +22,13 @@ const ListarJugadas = ({setJuegos, juegos}) => {
                    borderRadius: 20,
                  }}>
                  <DataTable.Title>Tipo</DataTable.Title>
-                 <DataTable.Title>Numeros</DataTable.Title>
-                 <DataTable.Title>Monto</DataTable.Title>
-                 <DataTable.Title>Loteria</DataTable.Title>
+                 <DataTable.Title >Numeros</DataTable.Title>
+                 <DataTable.Title numeric>Monto</DataTable.Title>
+                 <DataTable.Title numeric>Loteria</DataTable.Title>
                  <DataTable.Title numeric>Accion</DataTable.Title>
                </DataTable.Header>
+           <ScrollView style={{height: '60%', position: 'relative', left: 0}}>
+
                {console.log('props: :', juegos)}
      
                {juegos.map((juego, index) => {
@@ -50,9 +51,9 @@ const ListarJugadas = ({setJuegos, juegos}) => {
                            ? 'SP'
                            : 'TR'}
                        </DataTable.Cell>
-                       <DataTable.Cell>{numeros}</DataTable.Cell>
-                       <DataTable.Cell>{montos}</DataTable.Cell>
-                       <DataTable.Cell>{nombreJuego}</DataTable.Cell>
+                       <DataTable.Cell numeric>{numeros}</DataTable.Cell>
+                       <DataTable.Cell numeric>{montos}</DataTable.Cell>
+                       <DataTable.Cell numeric>{nombreJuego}</DataTable.Cell>
                        <DataTable.Cell numeric>
                          <TouchableOpacity
                            onPress={(_id) =>
@@ -67,12 +68,13 @@ const ListarJugadas = ({setJuegos, juegos}) => {
                    </Fragment>
                  );
                })}
+           </ScrollView>
+
              </DataTable>
              <View style={styles.infoData}>
                  <Text style={styles.footerDataTable}>Cantidad: #{juegos.length}</Text>
                  <Text style={styles.footerDataTable}>Total: RD${juegos.map(item => item.montos).reduce((prev, next) => prev + next)}.00</Text>
              </View>
-           </ScrollView>
          </Surface>     
       )
       :
@@ -95,7 +97,7 @@ const styles = StyleSheet.create({
       margin: 10,
     },
     header: {
-      paddingTop: 30,
+      paddingTop: 20,
     },
     footer: {
       flex: 2,
@@ -118,12 +120,13 @@ const styles = StyleSheet.create({
     infoData: {
         flexDirection: 'row', 
         justifyContent:'space-around', 
-        backgroundColor: '#FFDA00', 
-        borderRadius: 30
+        backgroundColor: '#000', 
+        paddingTop: 5
     },
     footerDataTable: {
         fontWeight: 'bold',
         fontSize: 15,
-        borderRadius:30
+        borderRadius:30,
+        color: '#fff'
     }
   });
