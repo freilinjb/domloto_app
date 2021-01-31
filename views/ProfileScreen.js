@@ -26,7 +26,8 @@ import LotteryContext from '../context/lottery/lotteryContext';
 import {AuthContext} from '../context/auth/authContext';
 
 const ProfileScreen = () => {
-  const {getSorteos, sorteos} = useContext(LotteryContext);
+  const {getSorteos, sorteos, registrarTicket} = useContext(LotteryContext);
+  const {idUsuario} = useContext(AuthContext);
 
   const [operacion, setOperacion] = useState('monto');
   const [titulo, setTitulo] = useState('monto');
@@ -162,6 +163,8 @@ const ProfileScreen = () => {
     } else if (selectedItems.length === 0) {
       setTitulo('seleccione una loteria');
     }
+
+    // console.log('iDusuadsfasdf: ', idUsuario);
   }, [montos, numeros, selectedItems]);
 
   useEffect(() => {
@@ -260,7 +263,7 @@ const ProfileScreen = () => {
                 icon="printer-pos"
                 color="green"
                 size={30}
-                onPress={() => imprimir()}
+                onPress={() => registrarTicket(idUsuario, juegos)}
                 style={{position: 'absolute'}}
               />
             </View>

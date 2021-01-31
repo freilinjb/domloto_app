@@ -13,31 +13,25 @@ import {
 } from 'react-native-paper';
 import {DrawerContentScrollView,DrawerItem} from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import{ AuthContextApp, AuthContext } from '../context/auth/authContext';
+import{ AuthContext } from '../context/auth/authContext';
 
 export function DrawerContent(props) {
 
     const paperTheme = useTheme();
 
-    const { signOut } = React.useContext(AuthContextApp);
-    const { usuarioAutenticado, autenticado, nombre, apellido, usuario, cerrarSesion } = React.useContext(AuthContext);
+    const { autenticado, nombre, apellido, usuario, cerrarSesion } = React.useContext(AuthContext);
 
     useEffect(() => {
-        const validarSesion = async () => {
-            // usuarioAutenticado();
-            if(autenticado === null) {
-                signOut();
-                cerrarSesion();
-            }
-        }
-        validarSesion();
+        // const validarSesion = async () => {
+        //     // usuarioAutenticado();
+        //     if(autenticado === null) {
+        //         signOut();
+        //         cerrarSesion();
+        //     }
+        // }
+        // validarSesion();
     }, []);
-    
 
-    const limpiarLaSesion = () => {
-        signOut();
-        cerrarSesion();
-    }
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>
@@ -139,8 +133,8 @@ export function DrawerContent(props) {
                         size={size}
                         />
                     )}
-                    label="Sign Out"
-                    onPress={() => {limpiarLaSesion()}}
+                    label="Cerrar Sesión"
+                    onPress={() => {cerrarSesion()}}
                 />
             </Drawer.Section>
         </View>

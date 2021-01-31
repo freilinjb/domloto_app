@@ -39,12 +39,50 @@ const LotteryState = props => {
         }
     }
 
+    const registrarTicket = async (idUsuario, juegos) => {
+        // console.log('state: idUsuario: ', idUsuario);
+        // return;
+        const jugadas_array = [];
+        const jugadas_array_temp = [];
+
+        if(juegos.length > 0) {
+            juegos.forEach((data) => {
+                const { idJuego, tipoJuego, numeros, montos } = data;
+
+                jugadas_array_temp.push({idJuego, tipoJuego, numeros, monto: montos});
+            });
+
+            console.log('resultadosJuegos: ', jugadas_array_temp);
+
+            // jugadas_array.push();
+
+            if(jugadas_array_temp.length > 0) {
+                clienteAxios.post('/api/lottery/ticket/add',{
+                    idUsuario, numeros: jugadas_array_temp
+                })
+                .then((respuesta) => {
+                    console.log('resultadosSorteos: ', respuesta);
+
+                    console.log('respuesta Guardada: ', respuesta);
+
+                    // dispatch({
+                    //     type: OBTENER_LOTERIAS,
+                    //     payload: respuesta
+                    // });
+                });
+            }
+
+            console.log('Juegos Final:', jugadas_array[0]);
+        }
+    }
+
     return (
         <LotteryContext.Provider
             value={{
                 loterias: state.loterias,
                 sorteos: state.sorteos,
-                getSorteos
+                getSorteos,
+                registrarTicket
             }}
         >
             {props.children}

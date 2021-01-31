@@ -17,18 +17,18 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
 
 //Importando el Context
-import {AuthContext, AuthContextApp} from '../../context/auth/authContext';
+import {AuthContext} from '../../context/auth/authContext';
 
 const SignInScreen = ({navigation}) => {
 
-    const { signIn } = useContext(AuthContextApp);
+    // const { signIn } = useContext(AuthContextApp);
     const { iniciarSesion, mensaje, autenticado, token, usuario } = useContext(AuthContext);
 
     useEffect(() => {
 
         if(autenticado === true) {
         //     // navigation.navigate("SignUp");
-            signIn(usuario, token);
+            // signIn(usuario, token);
         }
 
         if(mensaje) { 
@@ -131,7 +131,7 @@ const SignInScreen = ({navigation}) => {
         // signIn(hola);
         // console.log('hola: ', hola);
         iniciarSesion(userName, password);
-        await signIn(userName, token);
+        // await signIn(userName, token);
     }
 
     return (

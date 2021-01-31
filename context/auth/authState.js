@@ -13,7 +13,8 @@ import {
     OBTENER_USUARIO,
     LOGIN_EXITOSO,
     LOGIN_ERROR,
-    CERRAR_SESION
+    CERRAR_SESION,
+    INICIANDO_CONSULTA
 } from '../../types';
 
 
@@ -23,6 +24,7 @@ const AuthState = props => {
         token: AsyncStorage.getItem('token'),
         autenticado: null,
         usuario: null,//La informacion del usuario
+        idUsuario: null,
         nombre: null,
         apellido: null,
         mensaje: null,
@@ -32,15 +34,10 @@ const AuthState = props => {
     const [state, dispatch] = useReducer(authReducer, initialState);
 
     const usuarioAutenticado = async (token) => {
-        // let token = AsyncStorage.getItem('token');
-        // let token = initialState.token;
 
-        // console.log('Token2222: ', token);
-
-        // token = "Bearer " + token;
-        // token = token.replace("Bearer ", "");
-
-        // console.log('token: 2: ', token);
+        dispatch({
+            type: INICIANDO_CONSULTA
+        })
         if(token) {
             tokenAuth(`Bearer ${token}`);
         }
@@ -118,6 +115,7 @@ const AuthState = props => {
             value={{
                 token: state.token,
                 autenticado: state.autenticado,
+                idUsuario: state.idUsuario,
                 usuario: state.usuario,
                 nombre: state.nombre,
                 apellido: state.apellido,

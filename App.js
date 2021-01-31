@@ -1,159 +1,42 @@
-
 import 'react-native-gesture-handler';
-import React,{useState, useEffect, createContext} from 'react';
-import {View,ActivityIndicator,StatusBar} from 'react-native';
-
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer } from '@react-navigation/native';
+import React, {useState, useEffect, createContext} from 'react';
 
 import AsyncStorage from '@react-native-community/async-storage';
-
-import SignUpScreen from './views/auth/SignUpScreen';
-import SignInScreen from './views/auth/SignInScreen';
-import SupportScreen from './views/SupportScreen';
-import SplashScreen from './views/SplashScreen';
-import RootStackScreen from './views/RootStackScreen';
-
-import MainTabScreen from './views/MainTabScreen';
-
-import { DrawerContent } from './views/DrawerContent';
-
 
 //Importar los state del context
 import AuthState from './context/auth/authState';
 import LotteryState from './context/lottery/lotteryState';
 
-import { AuthContextApp } from './context/auth/authContext';
-
-// import AuthContext from './context/auth/authContext';
-
-const Drawer = createDrawerNavigator();
-
+import Navegaciones from './components/Navegaciones';
+import tokenAuth from './config/token';
 const App = () => {
-  
-  const [cargando, setCargando] = useState(false);
-  const [autenticado, setAutenticado] = useState(null);
+  const [tokenLocal, setTokenLocal] = useState(null);
 
-  const initialLoginState = {
-    isLoading: true,
-    userName: null,
-    userToken: AsyncStorage.getItem('userToken'),
-    };
+  //Revisar si tenemos un token
+  // const token = AsyncStorage.getItem('token');
 
-    const loginReducer = (prevState, action) => {
-      switch( action.type ) {
-        case 'RETRIEVE_TOKEN': 
-          return {
-            ...prevState,
-            userToken: action.token,
-            isLoading: false,
-          };
-        case 'LOGIN': 
-          return {
-            ...prevState,
-            userName: action.id,
-            userToken: action.token,
-            isLoading: false,
-          };
-        case 'LOGOUT': 
-          return {
-            ...prevState,
-            userName: null,
-            userToken: null,
-            isLoading: false,
-          };
-        case 'REGISTER': 
-          return {
-            ...prevState,
-            userName: action.id,
-            userToken: action.token,
-            isLoading: false,
-          };
+  if (AsyncStorage.getItem('token')) {
+
+    AsyncStorage.getItem('token').then((value) => {
+
+      if(value) {
+        console.log('token prueba: ', value);
+
+        setTokenLocal(value);
+        tokenAuth(value);
       }
-    };
 
-    const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginState);
-
-    const authContextApp = React.useMemo(() => ({
-      signIn: async(usuario, token) => {
-        // setUserToken('fgkj');
-        // setIsLoading(false);
-        // console.log('foundUser: ', foundUser);
-        const userToken = token;
-        const userName = usuario;
-        console.log('Token App: ', String(token));
-        try {
-          await AsyncStorage.setItem('userToken', String(token));
-        } catch(e) {
-          console.log(e);
-        }
-        dispatch({ type: 'LOGIN', id: userName, token: userToken });
-      },
-      signOut: async() => {
-        try {
-          await AsyncStorage.removeItem('userToken');
-        } catch(e) {
-          console.log(e);
-        }
-        dispatch({ type: 'LOGOUT' });
-      },
-      signUp: () => {
-
-      },
-      toggleTheme: () => {
-        setIsDarkTheme( isDarkTheme => !isDarkTheme );
-      }
-    }), []);
-
-      useEffect(() => {
-        setTimeout(() => {
-            // setIsLoading(false);
-            let userToken;
-            userToken = null;
-            try {
-              userToken = AsyncStorage.getItem('token');
-            } catch(e) {
-              console.log(e);
-            }
-            // console.log('user token: ', userToken);
-            dispatch({ type: 'RETRIEVE_TOKEN', token: userToken });
-  
-        }, 500);
-      }, []);
-
-
-  if(loginState.isLoading) {
-    return(
-      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-        <ActivityIndicator size="large"/>
-      </View>
-    );
+    });
+    // console.log('token: ', value);
   }
 
   return (
     <>
-      <AuthContextApp.Provider value={authContextApp}>
       <AuthState>
-      <LotteryState>
-        <StatusBar translucent={true} backgroundColor={'transparent'}/>
-        <NavigationContainer>
-        { loginState.userToken !== null ? (
-
-            <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
-              <Drawer.Screen name="HomeDrawer" component={MainTabScreen}/>
-              <Drawer.Screen name="Support" component={SupportScreen}/>
-              
-              <Drawer.Screen name="SignIn" component={SignInScreen}/>
-              <Drawer.Screen name="SignUp" component={SignUpScreen}/>            
-            </Drawer.Navigator>
-          )
-        :
-            <RootStackScreen/>
-        }
-        </NavigationContainer>
+        <LotteryState>
+          <Navegaciones tokenLocal={tokenLocal}/>
         </LotteryState>
       </AuthState>
-      </AuthContextApp.Provider>
     </>
   );
 };
