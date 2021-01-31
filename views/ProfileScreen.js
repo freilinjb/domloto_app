@@ -175,6 +175,24 @@ const ProfileScreen = () => {
     setSelectedIObjects(selectionObject);
   };
 
+  const imprimir = () => {
+    Alert.alert(
+      "Informacion",
+      "Desea generar Ticke",
+      [
+        {
+          text: "No",
+          style: "cancel"
+        },
+        { text: "Si", onPress: () => {
+          registrarTicket(idUsuario, juegos);
+          setJuegos([]);
+        }}
+      ],
+      { cancelable: false }
+    );
+  }
+
   return (
     <>
       <StatusBar backgroundColor="#FFDA00" barStyle="dark-content" />
@@ -194,7 +212,7 @@ const ProfileScreen = () => {
         </Snackbar>
         <ListarJugadas juegos={juegos} setJuegos={setJuegos} />
 
-        <View
+        <Animatable.View animation="fadeInUpBig"
           style={[
             styles.footer,
             {height: '55%', position: 'absolute', left: 0, right: 0, bottom: 0},
@@ -258,9 +276,10 @@ const ProfileScreen = () => {
               <IconButton
                 icon="printer-pos"
                 color="green"
-                size={30}
-                onPress={() => registrarTicket(idUsuario, juegos)}
+                size={40}
+                onPress={() => imprimir()}
                 style={{position: 'absolute'}}
+                disabled={juegos.length === 0}
               />
             </View>
 
@@ -268,7 +287,7 @@ const ProfileScreen = () => {
               <IconButton
                 icon="archive-arrow-up"
                 color="#FFDA00"
-                size={30}
+                size={40}
                 onPress={() => procesar()}
                 style={{position: 'absolute'}}
               />
@@ -278,7 +297,7 @@ const ProfileScreen = () => {
               <IconButton
                 icon="close-thick"
                 color="red"
-                size={30}
+                size={40}
                 onPress={() => cancelar()}
                 style={{position: 'absolute'}}
               />
@@ -308,12 +327,8 @@ const ProfileScreen = () => {
                 />
               )}
             </View>
-            {/* <Button title={titulo} color onPress={() => procesar()} /> */}
           </ScrollView>
-          {/* <Button icon="camera" mode="contained" onPress={() => procesar()}>
-            Press me
-          </Button> */}
-        </View>
+          </Animatable.View>
       </View>
     </>
   );
