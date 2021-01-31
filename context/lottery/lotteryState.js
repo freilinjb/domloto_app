@@ -9,21 +9,29 @@ import LotteryContext from './lotteryContext';
 
 import {
     OBTENER_LOTERIAS,
+    OBTENER_TICKET,
+    INICIANDO_CONSULTA,
     FINALIZANDO_CONSULTA
 } from '../../types';
 
 const LotteryState = props => {
 
     const initialState = {
+        cargandoLoteria: false,
         loterias: [],
         sorteos: [],
-        cargando: false
+        ultimoTicket: [],
+        tickets: []
     }
 
     const [state, dispatch] = useReducer(lotteryReducer, initialState);
 
     const getSorteos = async () => {
-        
+
+        dispatch({
+            type: INICIANDO_CONSULTA,
+        });
+
         try {
             const resultados = await clienteAxios.get('/api/lottery')
             .then((response) => {
@@ -44,6 +52,11 @@ const LotteryState = props => {
     const registrarTicket = async (idUsuario, juegos) => {
         // console.log('state: idUsuario: ', idUsuario);
         // return;
+        
+        dispatch({
+            type: INICIANDO_CONSULTA,
+        });
+
         const jugadas_array = [];
         const jugadas_array_temp = [];
 
@@ -65,14 +78,14 @@ const LotteryState = props => {
                 .then((respuesta) => {
                     console.log('resultadosSorteos: ', respuesta);
 
-                    console.log('respuesta Guardada: ', respuesta);
-
-                    // dispatch({
-                    //     type: OBTENER_LOTERIAS,
-                    //     payload: respuesta
-                    // });
+                    dispatch({
+                        type: OBTENER_TICKET,
+                        payload: respuesta.data.datos
+                    });
                 });
             }
+
+            
 
             console.log('Juegos Final:', jugadas_array[0]);
         }
@@ -83,7 +96,9 @@ const LotteryState = props => {
             value={{
                 loterias: state.loterias,
                 sorteos: state.sorteos,
-                cargando: state.cargando,
+                cargandoLoteria: state.cargandoLoteria,
+                ultimoTicket: state.ultimoTicket,
+                tickets: state.tickets,
                 getSorteos,
                 registrarTicket
             }}

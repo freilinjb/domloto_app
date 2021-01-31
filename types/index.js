@@ -13,3 +13,4 @@ export const CERRAR_SESION = 'CERRAR_SESION';
 
 //TYPES Lottery
 export const OBTENER_LOTERIAS = 'OBTENER_LOTERIAS';
+export const OBTENER_TICKET = 'OBTENER_TICKET';

@@ -100,10 +100,6 @@ const ProfileScreen = () => {
     }
   }
 
-  const imprimir =() => {
-    console.log('hola');
-  }
-
   const procesar = async () => {
     if (operacion === 'procesar') {
       setOperacion('monto');

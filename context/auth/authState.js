@@ -35,7 +35,7 @@ const AuthState = props => {
 
     const usuarioAutenticado = async (token) => {
 
-        console.log('hola mundo: ', token);
+        // console.log('hola mundo: ', token);
 
         dispatch({
             type: INICIANDO_CONSULTA
@@ -50,7 +50,7 @@ const AuthState = props => {
             .then((response) => {
 
                 try {
-                    console.log('consultando Datos:, ', response);
+                    // console.log('consultando Datos:, ', response);
                 // resultado = response;
                 if(response.data.success === 1) {
                     dispatch({
