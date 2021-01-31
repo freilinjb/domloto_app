@@ -8,7 +8,8 @@ import lotteryReducer from './lotteryReducer';
 import LotteryContext from './lotteryContext';
 
 import {
-    OBTENER_LOTERIAS
+    OBTENER_LOTERIAS,
+    FINALIZANDO_CONSULTA
 } from '../../types';
 
 const LotteryState = props => {

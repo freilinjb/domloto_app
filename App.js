@@ -20,7 +20,7 @@ const App = () => {
     AsyncStorage.getItem('token').then((value) => {
 
       if(value) {
-        console.log('token prueba: ', value);
+        // console.log('token prueba: ', value);
 
         setTokenLocal(value);
         tokenAuth(value);

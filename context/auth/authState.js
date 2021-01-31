@@ -35,6 +35,8 @@ const AuthState = props => {
 
     const usuarioAutenticado = async (token) => {
 
+        console.log('hola mundo: ', token);
+
         dispatch({
             type: INICIANDO_CONSULTA
         })
@@ -43,25 +45,38 @@ const AuthState = props => {
         }
 
         try {
-            const resultado = await clienteAxios.get('/api/auth')
+            // let resultado = null
+            await clienteAxios.get('/api/auth')
             .then((response) => {
 
-
-                dispatch({
-                    type: OBTENER_USUARIO,
-                    payload: response.data
-                });
+                try {
+                    console.log('consultando Datos:, ', response);
+                // resultado = response;
+                if(response.data.success === 1) {
+                    dispatch({
+                        type: OBTENER_USUARIO,
+                        payload: response.data
+                    });
+                } 
+                } catch (error) {
+                    dispatch({
+                        type: LOGIN_ERROR,
+                        payload: response.data.message
+                    });
+                }
             });
 
-            console.log('resultadousuarioAutenticado: ', resultado);
+            // console.log('resultadousuarioAutenticado: ', resultado);
 
             
 
         } catch (error) {
-            console.log(error);
+            // console.log(error);
+                        // console.log('resultadousuarioAutenticado: ', resultado);
+
             dispatch({
                 type: LOGIN_ERROR,
-                payload: resultado.data.message
+                payload: "Sesion expirada"
             });
         }
     }
@@ -69,7 +84,7 @@ const AuthState = props => {
     const iniciarSesion = async (usuario, clave) => {
 
         try {
-            console.log('Usuario: ', usuario,'\nClave: ', clave);
+            // console.log('Usuario: ', usuario,'\nClave: ', clave);
             // return;
              const resultado = await clienteAxios.post('/api/auth', {
                  usuario,

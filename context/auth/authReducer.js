@@ -45,15 +45,18 @@ export default (state, action) => {
             }
 
         case LOGIN_ERROR:
+            console.log('LOGIN ERROR:', action.payload );
             AsyncStorage.removeItem('token');
             // console.log('action: ', action.payload);
             return {
                 ...state,
                 token: null,
-                // nombre: null,
-                // apellido: null,
-                // usuario: null,
+                nombre: null,
+                apellido: null,
+                idUsuario: null,
+                usuario: null,
                 mensaje: action.payload,
+                autenticado: null,
                 cargando: false
             }
 
