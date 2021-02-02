@@ -13,14 +13,13 @@ const App = () => {
   const [tokenLocal, setTokenLocal] = useState(null);
 
   if (AsyncStorage.getItem('token')) {
-
     AsyncStorage.getItem('token').then((value) => {
 
       if(value) {
+        console.log('tokenApp: ', value);
         setTokenLocal(value);
         tokenAuth(value);
-      }
-
+      } 
     });
   }
 

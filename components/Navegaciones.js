@@ -16,11 +16,8 @@ import MainTabScreen from '../views/MainTabScreen';
 
 import {DrawerContent} from '../views/DrawerContent';
 
-//Importar los state del context
-import AuthState from '../context/auth/authState';
-import LotteryState from '../context/lottery/lotteryState';
-
 import {AuthContext} from '../context/auth/authContext';
+import LotteryContext from '../context/lottery/lotteryContext';
 
 // import AuthContext from './context/auth/authContext';
 // import tokenAuth from './config/token';
@@ -28,7 +25,9 @@ import {AuthContext} from '../context/auth/authContext';
 const Drawer = createDrawerNavigator();
 
 const Navegaciones = ({tokenLocal}) => {
-  const {token, autenticado, cargando, usuarioAutenticado, } = useContext(AuthContext);
+  const {token, autenticado, cargando, cerrarSesion, usuarioAutenticado } = useContext(AuthContext);
+  const {getSorteos } = useContext(LotteryContext);
+  // const {  } = useContext(LotteryContext);
 
   
   useEffect(() => {
@@ -36,7 +35,10 @@ const Navegaciones = ({tokenLocal}) => {
     if (tokenLocal) {
         console.log('Token enviado: ',  tokenLocal);
         usuarioAutenticado(tokenLocal);
-
+        getSorteos();
+    } else if(cargando === false){
+      // console.log('hoka: ', tokenLocal)
+      cerrarSesion();
     }
 
 },[tokenLocal]);

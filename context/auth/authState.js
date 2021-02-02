@@ -35,7 +35,7 @@ const AuthState = props => {
 
     const usuarioAutenticado = async (token) => {
 
-        // console.log('hola mundo: ', token);
+        console.log('hola mundo: ', token);
 
         dispatch({
             type: INICIANDO_CONSULTA

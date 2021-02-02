@@ -6,7 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import HomeScreen from './HomeScreen';
-import DetailsScreen from './DetailsScreen';
+import Tickets from './Tickets';
 import ExploreScreen from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
 import ConfiguracionScreen from './ConfiguracionScreen';
@@ -34,7 +34,7 @@ const MainTabScreen = () => (
       />
       <Tab.Screen
         name="Notificacion"
-        component={DetailsStackScreen}
+        component={TicketsStackScreen}
         options={{
           tabBarLabel: 'Notificacion',
           tabBarColor: '#1f65ff',
@@ -100,7 +100,7 @@ const HomeStackScreen = ({navigation}) => (
 </HomeStack.Navigator>
 );
 
-const DetailsStackScreen = ({navigation}) => (
+const TicketsStackScreen = ({navigation}) => (
 <DetailsStack.Navigator screenOptions={{
         headerStyle: {
         backgroundColor: '#1f65ff',
@@ -110,7 +110,7 @@ const DetailsStackScreen = ({navigation}) => (
         fontWeight: 'bold'
         }
     }}>
-        <DetailsStack.Screen name="Reportes" component={DetailsScreen} options={{
+        <DetailsStack.Screen name="Reportes" component={Tickets} options={{
           headerLeft: () => (
               <Icon.Button name="ios-menu" size={25} backgroundColor="#1f65ff" onPress={() => navigation.openDrawer()}></Icon.Button>
           )

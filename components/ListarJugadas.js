@@ -3,6 +3,7 @@ import { ScrollView, TouchableOpacity, View, StyleSheet, Text } from 'react-nati
 import {DataTable, Surface} from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as Animatable from 'react-native-animatable';
+import LinearGradient from 'react-native-linear-gradient';
 
 const ListarJugadas = ({setJuegos, juegos}) => {
 
@@ -13,11 +14,10 @@ const ListarJugadas = ({setJuegos, juegos}) => {
   return (
     <View style={styles.header}>
         {juegos.length > 0 ?  (
-        <Animatable.View animation="fadeInDownBig" duration={500}>
 
-           <Surface style={{marginBottom: 10, marginTop: 10, borderRadius: 20}}>
-             {/* <LinearGradient colors={['#D8CB00', '#FFDA00']}> */}
+           <Surface style={{marginBottom: 10, marginTop: 10, borderRadius: 20, backgroundColor: '#e1e1e1'}}>
              <DataTable key={Math.random()}>
+
                <DataTable.Header
                  style={{
                    backgroundColor: '#FFDA00',
@@ -79,7 +79,7 @@ const ListarJugadas = ({setJuegos, juegos}) => {
                  <Text style={styles.footerDataTable}>Total: RD${juegos.map(item => item.montos).reduce((prev, next) => prev + next)}.00</Text>
              </View>
          </Surface> 
-         </Animatable.View>    
+
       )
       :
       (

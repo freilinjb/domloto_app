@@ -27,7 +27,7 @@ import {AuthContext} from '../context/auth/authContext';
 
 const ProfileScreen = () => {
   const {getSorteos, sorteos, registrarTicket} = useContext(LotteryContext);
-  const {idUsuario} = useContext(AuthContext);
+  const {idUsuario, cargando} = useContext(AuthContext);
 
   const [operacion, setOperacion] = useState('monto');
   const [titulo, setTitulo] = useState('monto');
@@ -70,6 +70,12 @@ const ProfileScreen = () => {
       Alert.alert('Error!', 'Para donde vas tiguere', [{text: 'Okay'}]);
     }
   };
+
+  useEffect(() => {
+    if(cargando === false) {
+      getSorteos();
+    }
+  }, [cargando])
 
   const onDismissSnackBar = () => setVisible(false);
 
@@ -344,7 +350,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    // backgroundColor: '#009387',
+    // backgroundColor: '#000',
   },
   header: {
     paddingTop: 30,
