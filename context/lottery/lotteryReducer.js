@@ -3,7 +3,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { 
     OBTENER_LOTERIAS,
     INICIANDO_CONSULTA,
-    OBTENER_TICKET
+    FINALIZANDO_CONSULTA,
+    OBTENER_TICKET,
+    OBTENER_TICKETS
 } from '../../types';
 
 export default (state, action) => {
@@ -25,6 +27,19 @@ export default (state, action) => {
             return {
                 ...state,
                 ultimoTicket: action.payload
+            }
+        
+        case OBTENER_TICKETS: {
+            return {
+                ...state,
+                tickets: action.payload.data
+            }
+        }
+
+        case FINALIZANDO_CONSULTA:
+            return {
+                ...state,
+                cargandoLoteria: false
             }
         default:
             return state;

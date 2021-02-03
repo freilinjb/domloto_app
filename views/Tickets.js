@@ -1,29 +1,35 @@
-import React, {useState} from 'react';
-import {View, Text, Button, StyleSheet} from 'react-native';
+import React, {useState, useContext, useEffect} from 'react';
+import {View, Text, Button, StyleSheet, StatusBar, FlatList} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 
+import LotteryContext from '../context/lottery/lotteryContext';
+
+import Ticket from '../components/ui/Ticket';
 const Tickets = ({navigation}) => {
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const  { getTickets, tickets } = useContext(LotteryContext);
+  const [searchQuery, setSearchQuery] = useState('');
   const onChangeSearch = query => setSearchQuery(query);
 
+  useEffect(() => {
+    getTickets();
+  },[]);
+
   return (
-    <View style={styles.container}>
+    <>
+    <StatusBar backgroundColor="#1f65ff" barStyle="dark-content"/>
+    <View style={{marginHorizontal: '2.5%', marginTop: 10, marginBottom: 50, backgroundColor: '#fff'}}>
         <Searchbar
           placeholder="Consulta de tickets"
           onChangeText={onChangeSearch}
           value={searchQuery}
         />
-        <Text>Details Screen</Text>
-        <Button
-          title="Go to details screen...holka"
-          onPress={() => navigation.push('Details')}
+    <FlatList
+          data={tickets}
+          renderItem={(item) => ( <Ticket item={item} key={item.index}/>)}
+          keyExtractor={(ticket, index) => ticket.ticket+'+'+index}
         />
-        <Button
-          title="Go to home"
-          onPress={() => navigation.navigate('Home')}
-        />
-        <Button title="Go back" onPress={() => navigation.goBack()} />
     </View>
+    </>
   );
 };
 
@@ -34,7 +40,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     marginHorizontal: '2.5%',
-    marginTop: 10
+    marginTop: 10,
   },
   contenido: {
   },

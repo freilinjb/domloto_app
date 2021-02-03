@@ -15,12 +15,16 @@ const App = () => {
   if (AsyncStorage.getItem('token')) {
     AsyncStorage.getItem('token').then((value) => {
 
-      if(value) {
+      if(typeof value === "string") {
         console.log('tokenApp: ', value);
         setTokenLocal(value);
         tokenAuth(value);
-      } 
+      }  else {
+        console.log('else');
+      }
     });
+  } else {
+    console.log('hola');
   }
 
   return (

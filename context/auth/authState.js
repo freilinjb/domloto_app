@@ -82,6 +82,7 @@ const AuthState = props => {
     }
 
     const iniciarSesion = async (usuario, clave) => {
+        console.log('iniciarSesion: ' , clave);
 
         try {
             // console.log('Usuario: ', usuario,'\nClave: ', clave);

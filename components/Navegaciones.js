@@ -25,25 +25,29 @@ import LotteryContext from '../context/lottery/lotteryContext';
 const Drawer = createDrawerNavigator();
 
 const Navegaciones = ({tokenLocal}) => {
-  const {token, autenticado, cargando, cerrarSesion, usuarioAutenticado } = useContext(AuthContext);
-  const {getSorteos } = useContext(LotteryContext);
+  const {
+    token,
+    autenticado,
+    cargando,
+    cerrarSesion,
+    usuarioAutenticado,
+  } = useContext(AuthContext);
+  const {getSorteos} = useContext(LotteryContext);
   // const {  } = useContext(LotteryContext);
 
-  
   useEffect(() => {
     //Cargando informacion del usuario autenticado
     if (tokenLocal) {
-        console.log('Token enviado: ',  tokenLocal);
-        usuarioAutenticado(tokenLocal);
-        getSorteos();
-    } else if(cargando === false){
-      // console.log('hoka: ', tokenLocal)
+      console.log('Token enviado: ', tokenLocal);
+      usuarioAutenticado(tokenLocal);
+      getSorteos();
+    } else {
+      console.log('hoka: ', tokenLocal);
       cerrarSesion();
     }
+  }, []);
 
-},[tokenLocal]);
-
-//   console.log('cargando: ', cargando);
+  //   console.log('cargando: ', cargando);
   if (cargando) {
     return (
       <View>
@@ -52,30 +56,25 @@ const Navegaciones = ({tokenLocal}) => {
     );
   }
 
-
   return (
     <>
-        {/* <LotteryState> */}
-          <StatusBar translucent={true} backgroundColor={'transparent'} />
-          <NavigationContainer>
-            { token !== null && autenticado === true ? (
+      {/* <LotteryState> */}
+      <StatusBar translucent={true} backgroundColor={'transparent'} />
+      <NavigationContainer>
+        {token !== null && autenticado === true ? (
+          <Drawer.Navigator
+            drawerContent={(props) => <DrawerContent {...props} />}>
+            <Drawer.Screen name="HomeDrawer" component={MainTabScreen} />
+            <Drawer.Screen name="Support" component={SupportScreen} />
 
-                <Drawer.Navigator
-                drawerContent={(props) => <DrawerContent {...props} />}>
-                <Drawer.Screen name="HomeDrawer" component={MainTabScreen} />
-                <Drawer.Screen name="Support" component={SupportScreen} />
-
-                <Drawer.Screen name="SignIn" component={SignInScreen} />
-                <Drawer.Screen name="SignUp" component={SignUpScreen} />
-                </Drawer.Navigator>
-               )
-            :
-                (
-                    <RootStackScreen/>
-                )
-            } 
-          </NavigationContainer>
-        {/* </LotteryState> */}
+            <Drawer.Screen name="SignIn" component={SignInScreen} />
+            <Drawer.Screen name="SignUp" component={SignUpScreen} />
+          </Drawer.Navigator>
+        ) : (
+          <RootStackScreen />
+        )}
+      </NavigationContainer>
+      {/* </LotteryState> */}
     </>
   );
 };

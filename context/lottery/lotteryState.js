@@ -10,6 +10,7 @@ import LotteryContext from './lotteryContext';
 import {
     OBTENER_LOTERIAS,
     OBTENER_TICKET,
+    OBTENER_TICKETS,
     INICIANDO_CONSULTA,
     FINALIZANDO_CONSULTA
 } from '../../types';
@@ -25,6 +26,29 @@ const LotteryState = props => {
     }
 
     const [state, dispatch] = useReducer(lotteryReducer, initialState);
+
+    const getTickets = async () => {
+        dispatch({
+            type: INICIANDO_CONSULTA,
+        });
+
+        try {
+            await clienteAxios.get('/api/lottery/ticket')
+                .then((response) => {
+                    console.log('getTickets: ', response);
+
+                    dispatch({
+                        type: OBTENER_TICKETS,
+                        payload: response.data
+                    });
+                });
+        } catch (error) {
+            console.log('error: ', error);
+            dispatch({
+                type: FINALIZANDO_CONSULTA
+            });
+        }
+    }
 
     const getSorteos = async () => {
 
@@ -46,6 +70,10 @@ const LotteryState = props => {
 
         } catch (error) {
             console.log('error: ', error);
+
+            dispatch({
+                type: FINALIZANDO_CONSULTA
+            });
         }
     }
 
@@ -91,6 +119,7 @@ const LotteryState = props => {
         }
     }
 
+
     return (
         <LotteryContext.Provider
             value={{
@@ -100,7 +129,8 @@ const LotteryState = props => {
                 ultimoTicket: state.ultimoTicket,
                 tickets: state.tickets,
                 getSorteos,
-                registrarTicket
+                registrarTicket,
+                getTickets
             }}
         >
             {props.children}
