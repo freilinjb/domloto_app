@@ -34,7 +34,6 @@ const AuthState = props => {
     const [state, dispatch] = useReducer(authReducer, initialState);
 
     const usuarioAutenticado = async (token) => {
-
         console.log('hola mundo: ', token);
 
         dispatch({
@@ -48,32 +47,14 @@ const AuthState = props => {
             // let resultado = null
             await clienteAxios.get('/api/auth')
             .then((response) => {
-
-                try {
-                    // console.log('consultando Datos:, ', response);
-                // resultado = response;
                 if(response.data.success === 1) {
                     dispatch({
                         type: OBTENER_USUARIO,
                         payload: response.data
                     });
-                } 
-                } catch (error) {
-                    dispatch({
-                        type: LOGIN_ERROR,
-                        payload: response.data.message
-                    });
                 }
             });
-
-            // console.log('resultadousuarioAutenticado: ', resultado);
-
-            
-
         } catch (error) {
-            // console.log(error);
-                        // console.log('resultadousuarioAutenticado: ', resultado);
-
             dispatch({
                 type: LOGIN_ERROR,
                 payload: "Sesion expirada"

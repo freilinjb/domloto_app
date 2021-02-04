@@ -20,7 +20,7 @@ import {AuthContext} from '../context/auth/authContext';
 import LotteryContext from '../context/lottery/lotteryContext';
 
 // import AuthContext from './context/auth/authContext';
-// import tokenAuth from './config/token';
+import tokenAuth from '../config/token';
 
 const Drawer = createDrawerNavigator();
 
@@ -36,16 +36,42 @@ const Navegaciones = ({tokenLocal}) => {
   // const {  } = useContext(LotteryContext);
 
   useEffect(() => {
-    //Cargando informacion del usuario autenticado
-    if (tokenLocal) {
-      console.log('Token enviado: ', tokenLocal);
-      usuarioAutenticado(tokenLocal);
-      getSorteos();
-    } else {
-      console.log('hoka: ', tokenLocal);
-      cerrarSesion();
+    const iniciar = async () => {
+      respuesta = await AsyncStorage.getItem('token').then((value) => {
+  
+        // if(value) {
+        //   console.log('tokenApp: ', value);
+        //   usuarioAutenticado(value);
+        //   tokenAuth(value);
+        // }  else {
+        //   console.log('tokenApp: ', value);
+        //   console.log('else');
+        // }
+
+        return value;
+      });
+      if(respuesta) {
+        usuarioAutenticado(respuesta);
+      } else {
+        cerrarSesion();
+      }
+      console.log('respuesta: ', respuesta);
     }
+
+    iniciar();
   }, []);
+
+  // useEffect(() => {
+  //   //Cargando informacion del usuario autenticado
+  //   if (tokenLocal) {
+  //     console.log('Token enviado: ', tokenLocal);
+  //     usuarioAutenticado(tokenLocal);
+  //     getSorteos();
+  //   } else {
+  //     console.log('hoka: ', tokenLocal);
+  //     // cerrarSesion();
+  //   }
+  // }, []);
 
   //   console.log('cargando: ', cargando);
   if (cargando) {

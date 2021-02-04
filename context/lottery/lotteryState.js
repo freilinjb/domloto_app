@@ -11,6 +11,7 @@ import {
     OBTENER_LOTERIAS,
     OBTENER_TICKET,
     OBTENER_TICKETS,
+    OBTENER_TICKET_API,
     INICIANDO_CONSULTA,
     FINALIZANDO_CONSULTA
 } from '../../types';
@@ -22,7 +23,8 @@ const LotteryState = props => {
         loterias: [],
         sorteos: [],
         ultimoTicket: [],
-        tickets: []
+        tickets: [],
+        ticket: []
     }
 
     const [state, dispatch] = useReducer(lotteryReducer, initialState);
@@ -112,13 +114,33 @@ const LotteryState = props => {
                     });
                 });
             }
-
-            
-
             console.log('Juegos Final:', jugadas_array[0]);
         }
     }
 
+    const getTicket = async (ticket) => {
+        dispatch({
+            type: INICIANDO_CONSULTA,
+        });
+
+        try {
+            await clienteAxios.get(`/api/ticket/${ticket}`)
+            .then((response) => {
+                console.log('ressultadoTicket: ', response.data);
+                dispatch({
+                    type: OBTENER_TICKET_API,
+                    payload: response.data.data
+                });
+            });
+
+        } catch (error) {
+            console.log('error: ', error);
+
+            dispatch({
+                type: FINALIZANDO_CONSULTA
+            });
+        }
+    }
 
     return (
         <LotteryContext.Provider
@@ -130,7 +152,8 @@ const LotteryState = props => {
                 tickets: state.tickets,
                 getSorteos,
                 registrarTicket,
-                getTickets
+                getTickets,
+                getTicket
             }}
         >
             {props.children}

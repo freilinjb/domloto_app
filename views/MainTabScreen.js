@@ -36,7 +36,7 @@ const MainTabScreen = () => (
         name="Notificacion"
         component={TicketsStackScreen}
         options={{
-          tabBarLabel: 'Notificacion',
+          tabBarLabel: 'Reportes',
           tabBarColor: '#1f65ff',
           tabBarIcon: ({ color }) => (
             <Icon name="ios-notifications" color={color} size={26} />

@@ -36,6 +36,13 @@ export default (state, action) => {
             }
         }
 
+        case OBTENER_TICKET_API: {
+            return {
+                ...state,
+                ticket: action.payload.data
+            }
+        }
+
         case FINALIZANDO_CONSULTA:
             return {
                 ...state,
